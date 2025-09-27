@@ -1,0 +1,212 @@
+import { Show } from '@/types';
+
+export const shows: Show[] = [
+  {
+    id: 'produce101',
+    title: 'PRODUCE 101',
+    year: 2016,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'I.O.I',
+    description: 'サバイバルオーディション番組の原点',
+    contestants: [
+      { id: 'jeon-somi', name: '전소미 (Jeon Somi)', image: '/images/contestants/jeon-somi.jpg', company: 'JYP', rank: 1, nationality: 'KR' },
+      { id: 'sejeong', name: '김세정 (Kim Sejeong)', image: '/images/contestants/sejeong.jpg', company: 'Jellyfish', rank: 2, nationality: 'KR' },
+      { id: 'choi-yoojung', name: '최유정 (Choi Yoojung)', image: '/images/contestants/choi-yoojung.jpg', company: 'Fantagio', rank: 3, nationality: 'KR' },
+      { id: 'chungha', name: '김청하 (Chungha)', image: '/images/contestants/chungha.jpg', company: 'MBK', rank: 4, nationality: 'KR' },
+      { id: 'kim-doyeon', name: '김도연 (Kim Doyeon)', image: '/images/contestants/kim-doyeon.jpg', company: 'Fantagio', rank: 5, nationality: 'KR' },
+      { id: 'jung-chaeyeon', name: '정채연 (Jung Chaeyeon)', image: '/images/contestants/jung-chaeyeon.jpg', company: 'MBK', rank: 7, nationality: 'KR' },
+      { id: 'zhou-jieqiong', name: '周洁琼 (Zhou Jieqiong)', image: '/images/contestants/zhou-jieqiong.jpg', company: 'Pledis', rank: 8, nationality: 'CN' },
+      { id: 'kim-sohye', name: '김소혜 (Kim Sohye)', image: '/images/contestants/kim-sohye.jpg', company: 'Redline', rank: 9, nationality: 'KR' },
+      { id: 'yoo-yeonjung', name: '유연정 (Yoo Yeonjung)', image: '/images/contestants/yoo-yeonjung.jpg', company: 'Starship', rank: 10, nationality: 'KR' },
+      { id: 'jeon-yoojin', name: '전유진 (Jeon Yoojin)', image: '/images/contestants/jeon-yoojin.jpg', company: 'Fukuoka', rank: 11, nationality: 'KR' },
+      { id: 'kim-nayoung', name: '김나영 (Kim Nayoung)', image: '/images/contestants/kim-nayoung.jpg', company: 'Banana Culture', rank: 12, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'produce101-s2',
+    title: 'PRODUCE 101 SEASON2',
+    year: 2017,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'Wanna One',
+    description: '101人の練習生から11人を選ぶ男性版',
+    contestants: [
+      { id: 'kang-daniel', name: '강다니엘 (Kang Daniel)', image: '/images/contestants/kang-daniel.jpg', company: 'MMO', rank: 1, nationality: 'KR' },
+      { id: 'park-jihoon', name: '박지훈 (Park Jihoon)', image: '/images/contestants/park-jihoon.jpg', company: 'Maroo', rank: 2, nationality: 'KR' },
+      { id: 'lee-daehwi', name: '이대휘 (Lee Daehwi)', image: '/images/contestants/lee-daehwi.jpg', company: 'Brand New Music', rank: 3, nationality: 'KR' },
+      { id: 'kim-jaehwan', name: '김재환 (Kim Jaehwan)', image: '/images/contestants/kim-jaehwan.jpg', company: 'Independent', rank: 4, nationality: 'KR' },
+      { id: 'ong-seongwu', name: '옹성우 (Ong Seongwu)', image: '/images/contestants/ong-seongwu.jpg', company: 'Fantagio', rank: 5, nationality: 'KR' },
+      { id: 'park-woojin', name: '박우진 (Park Woojin)', image: '/images/contestants/park-woojin.jpg', company: 'Brand New Music', rank: 6, nationality: 'KR' },
+      { id: 'lai-guanlin', name: '라이관린 (Lai Guanlin)', image: '/images/contestants/lai-guanlin.jpg', company: 'Cube', rank: 7, nationality: 'TW' },
+      { id: 'yoon-jisung', name: '윤지성 (Yoon Jisung)', image: '/images/contestants/yoon-jisung.jpg', company: 'MMO', rank: 8, nationality: 'KR' },
+      { id: 'hwang-minhyun', name: '황민현 (Hwang Minhyun)', image: '/images/contestants/hwang-minhyun.jpg', company: 'Pledis', rank: 9, nationality: 'KR' },
+      { id: 'bae-jinyoung', name: '배진영 (Bae Jinyoung)', image: '/images/contestants/bae-jinyoung.jpg', company: 'C9', rank: 10, nationality: 'KR' },
+      { id: 'ha-sungwoon', name: '하성운 (Ha Sungwoon)', image: '/images/contestants/ha-sungwoon.jpg', company: 'Ardor & Able', rank: 11, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'produce48',
+    title: 'PRODUCE 48',
+    year: 2018,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'IZ*ONE',
+    description: '日韓合同プロジェクト',
+    contestants: [
+      { id: 'jang-wonyoung', name: '장원영 (Jang Wonyoung)', image: '/images/contestants/jang-wonyoung.jpg', company: 'Starship', rank: 1, nationality: 'KR' },
+      { id: 'miyawaki-sakura', name: '宮脇咲良 (Miyawaki Sakura)', image: '/images/contestants/miyawaki-sakura.jpg', company: 'HKT48', rank: 2, nationality: 'JP' },
+      { id: 'jo-yuri', name: '조유리 (Jo Yuri)', image: '/images/contestants/jo-yuri.jpg', company: 'Stone Music', rank: 3, nationality: 'KR' },
+      { id: 'choi-yena', name: '최예나 (Choi Yena)', image: '/images/contestants/choi-yena.jpg', company: 'Yuehua', rank: 4, nationality: 'KR' },
+      { id: 'an-yujin', name: '안유진 (An Yujin)', image: '/images/contestants/an-yujin.jpg', company: 'Starship', rank: 5, nationality: 'KR' },
+      { id: 'yabuki-nako', name: '矢吹奈子 (Yabuki Nako)', image: '/images/contestants/yabuki-nako.jpg', company: 'HKT48', rank: 6, nationality: 'JP' },
+      { id: 'kwangbae-eunbi', name: '권은비 (Kwon Eunbi)', image: '/images/contestants/kwon-eunbi.jpg', company: 'Woollim', rank: 7, nationality: 'KR' },
+      { id: 'honda-hitomi', name: '本田仁美 (Honda Hitomi)', image: '/images/contestants/honda-hitomi.jpg', company: 'AKB48', rank: 8, nationality: 'JP' },
+      { id: 'kim-chaewon', name: '김채원 (Kim Chaewon)', image: '/images/contestants/kim-chaewon.jpg', company: 'Woollim', rank: 10, nationality: 'KR' },
+      { id: 'kim-minju', name: '김민주 (Kim Minju)', image: '/images/contestants/kim-minju.jpg', company: 'Urban Works', rank: 11, nationality: 'KR' },
+      { id: 'lee-chaeyeon', name: '이채연 (Lee Chaeyeon)', image: '/images/contestants/lee-chaeyeon.jpg', company: 'WM', rank: 12, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'produce-x-101',
+    title: 'PRODUCE X 101',
+    year: 2019,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'X1',
+    description: '101人から11人を選ぶ第4シーズン',
+    contestants: [
+      { id: 'kim-yohan', name: '김요한 (Kim Yohan)', image: '/images/contestants/kim-yohan.jpg', company: 'Oui Entertainment', rank: 1, nationality: 'KR' },
+      { id: 'kim-wooseok', name: '김우석 (Kim Wooseok)', image: '/images/contestants/kim-wooseok.jpg', company: 'TOP Media', rank: 2, nationality: 'KR' },
+      { id: 'han-seungwoo', name: '한승우 (Han Seungwoo)', image: '/images/contestants/han-seungwoo.jpg', company: 'Plan A', rank: 3, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'produce101-japan',
+    title: 'PRODUCE 101 JAPAN',
+    year: 2019,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'JO1',
+    description: '日本版PRODUCE 101',
+    contestants: [
+      { id: 'mamehara-issei', name: '豆原一成 (Mamehara Issei)', image: '/images/contestants/mamehara-issei.jpg', company: 'STARDUST', rank: 1, nationality: 'JP' },
+      { id: 'kawanishi-takumi', name: '川西拓実 (Kawanishi Takumi)', image: '/images/contestants/kawanishi-takumi.jpg', company: 'Yoshimoto', rank: 2, nationality: 'JP' },
+      { id: 'ohira-shosei', name: '大平祥生 (Ohira Shosei)', image: '/images/contestants/ohira-shosei.jpg', company: 'STARDUST', rank: 3, nationality: 'JP' },
+    ]
+  },
+  {
+    id: 'produce101-japan-s2',
+    title: 'PRODUCE 101 JAPAN SEASON2',
+    year: 2021,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'INI',
+    description: '日本版PRODUCE 101第2シーズン',
+    contestants: [
+      { id: 'nishi-hiroto', name: '西洸人 (Nishi Hiroto)', image: '/images/contestants/nishi-hiroto.jpg', company: 'STARDUST', rank: 1, nationality: 'JP' },
+      { id: 'takatsuka-hiromu', name: '高塚大夢 (Takatsuka Hiromu)', image: '/images/contestants/takatsuka-hiromu.jpg', company: 'Johnny\'s Jr.', rank: 2, nationality: 'JP' },
+      { id: 'ozaki-takumi', name: '尾崎匠海 (Ozaki Takumi)', image: '/images/contestants/ozaki-takumi.jpg', company: 'STARDUST', rank: 3, nationality: 'JP' },
+    ]
+  },
+  {
+    id: 'produce101-japan-girls',
+    title: 'PRODUCE 101 JAPAN THE GIRLS',
+    year: 2023,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'ME:I',
+    description: '日本版初のガールズグループ誕生プロジェクト',
+    contestants: [
+      { id: 'kasahara-momona', name: '笠原桃奈 (Kasahara Momona)', image: '/images/contestants/kasahara-momona.jpg', company: 'STARDUST', rank: 1, nationality: 'JP' },
+      { id: 'inoue-ran', name: '井上蘭 (Inoue Ran)', image: '/images/contestants/inoue-ran.jpg', company: 'avex', rank: 2, nationality: 'JP' },
+      { id: 'yamada-anna', name: '山田杏奈 (Yamada Anna)', image: '/images/contestants/yamada-anna.jpg', company: 'Stardust', rank: 3, nationality: 'JP' },
+    ]
+  },
+  {
+    id: 'girls-planet-999',
+    title: 'Girls Planet 999',
+    year: 2021,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'Kep1er',
+    description: '日韓中合同ガールズグループプロジェクト',
+    contestants: [
+      { id: 'kim-chaehyun', name: '김채현 (Kim Chaehyun)', image: '/images/contestants/kim-chaehyun.jpg', company: 'WAKEONE', rank: 1, nationality: 'KR' },
+      { id: 'huening-bahiyyih', name: '휴닝바히에 (Huening Bahiyyih)', image: '/images/contestants/huening-bahiyyih.jpg', company: 'IST', rank: 2, nationality: 'KR' },
+      { id: 'choi-yujin', name: '최유진 (Choi Yujin)', image: '/images/contestants/choi-yujin.jpg', company: 'CLC', rank: 3, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'boys-planet',
+    title: 'Boys Planet',
+    year: 2023,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'ZEROBASEONE',
+    description: 'グローバル男性アイドル誕生プロジェクト',
+    contestants: [
+      { id: 'kim-jiwoong', name: '김지웅 (Kim Jiwoong)', image: '/images/contestants/kim-jiwoong.jpg', company: 'INX', rank: 1, nationality: 'KR' },
+      { id: 'zhang-hao', name: '장하오 (Zhang Hao)', image: '/images/contestants/zhang-hao.jpg', company: 'Yuehua', rank: 2, nationality: 'CN' },
+      { id: 'sung-hanbin', name: '성한빈 (Sung Hanbin)', image: '/images/contestants/sung-hanbin.jpg', company: 'YG Plus', rank: 3, nationality: 'KR' },
+      { id: 'seok-matthew', name: '석매튜 (Seok Matthew)', image: '/images/contestants/seok-matthew.jpg', company: 'MNH', rank: 4, nationality: 'CA' },
+      { id: 'park-gunwook', name: '박건욱 (Park Gunwook)', image: '/images/contestants/park-gunwook.jpg', company: 'Jellyfish', rank: 5, nationality: 'KR' },
+      { id: 'kim-taerae', name: '김태래 (Kim Taerae)', image: '/images/contestants/kim-taerae.jpg', company: 'WAKEONE', rank: 6, nationality: 'KR' },
+      { id: 'ricky', name: '리키 (Ricky)', image: '/images/contestants/ricky.jpg', company: 'Yuehua', rank: 7, nationality: 'CN' },
+      { id: 'kim-gyuvin', name: '김규빈 (Kim Gyuvin)', image: '/images/contestants/kim-gyuvin.jpg', company: 'YG Plus', rank: 8, nationality: 'KR' },
+      { id: 'han-yujin', name: '한유진 (Han Yujin)', image: '/images/contestants/han-yujin.jpg', company: 'WAKEONE', rank: 9, nationality: 'KR' },
+      { id: 'keita', name: 'ケイタ (Keita)', image: '/images/contestants/keita.jpg', company: 'Chuang', rank: 10, nationality: 'JP' },
+      { id: 'park-hanbin', name: '박한빈 (Park Hanbin)', image: '/images/contestants/park-hanbin.jpg', company: 'YG Plus', rank: 11, nationality: 'KR' },
+      { id: 'yoo-seungeon', name: '유승언 (Yoo Seungeon)', image: '/images/contestants/yoo-seungeon.jpg', company: 'Yuehua', rank: 12, nationality: 'KR' },
+    ]
+  },
+  {
+    id: 'i-land',
+    title: 'I-LAND',
+    year: 2020,
+    type: 'male',
+    status: 'completed',
+    debutGroup: 'ENHYPEN',
+    description: 'HYBEが手掛ける新世代アイドル誕生プロジェクト',
+    contestants: [
+      { id: 'yang-jungwon', name: '양정원 (Yang Jungwon)', image: '/images/contestants/yang-jungwon.jpg', company: 'BELIFT LAB', rank: 1, nationality: 'KR' },
+      { id: 'lee-heeseung', name: '이희승 (Lee Heeseung)', image: '/images/contestants/lee-heeseung.jpg', company: 'BELIFT LAB', rank: 2, nationality: 'KR' },
+      { id: 'park-jay', name: '박제이 (Park Jay)', image: '/images/contestants/park-jay.jpg', company: 'BELIFT LAB', rank: 3, nationality: 'US' },
+      { id: 'jake-sim', name: '제이크 (Jake)', image: '/images/contestants/jake-sim.jpg', company: 'BELIFT LAB', rank: 4, nationality: 'AU' },
+      { id: 'park-sunghoon', name: '박성훈 (Park Sunghoon)', image: '/images/contestants/park-sunghoon.jpg', company: 'BELIFT LAB', rank: 5, nationality: 'KR' },
+      { id: 'kim-sunoo', name: '김선우 (Kim Sunoo)', image: '/images/contestants/kim-sunoo.jpg', company: 'BELIFT LAB', rank: 6, nationality: 'KR' },
+      { id: 'nishimura-riki', name: '니키 (Ni-ki)', image: '/images/contestants/nishimura-riki.jpg', company: 'BELIFT LAB', rank: 7, nationality: 'JP' },
+      { id: 'k', name: '케이 (K)', image: '/images/contestants/k.jpg', company: 'FNC', rank: 8, nationality: 'JP' },
+      { id: 'daniel', name: '다니엘 (Daniel)', image: '/images/contestants/daniel.jpg', company: 'PLEDIS', rank: 9, nationality: 'KR' },
+      { id: 'hanbin', name: '한빈 (Hanbin)', image: '/images/contestants/hanbin.jpg', company: 'YG', rank: 10, nationality: 'VN' },
+    ]
+  },
+  {
+    id: 'r-u-next',
+    title: 'R U Next?',
+    year: 2023,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'ILLIT',
+    description: 'HYBE初のガールズグループ誕生プロジェクト',
+    contestants: [
+      { id: 'yunah', name: '윤아 (Yunah)', image: '/images/contestants/yunah.jpg', company: 'BELIFT LAB', rank: 1, nationality: 'KR' },
+      { id: 'minju', name: '민주 (Minju)', image: '/images/contestants/minju.jpg', company: 'BELIFT LAB', rank: 2, nationality: 'KR' },
+      { id: 'moka', name: '모카 (Moka)', image: '/images/contestants/moka.jpg', company: 'BELIFT LAB', rank: 3, nationality: 'JP' },
+    ]
+  },
+  {
+    id: 'nizi-project',
+    title: 'Nizi Project',
+    year: 2020,
+    type: 'female',
+    status: 'completed',
+    debutGroup: 'NiziU',
+    description: 'JYPとソニーミュージックによる日本のガールズグループプロジェクト',
+    contestants: [
+      { id: 'mako', name: '真子 (Mako)', image: '/images/contestants/mako.jpg', company: 'JYP', rank: 1, nationality: 'JP' },
+      { id: 'rio', name: 'リオ (Rio)', image: '/images/contestants/rio.jpg', company: 'JYP', rank: 2, nationality: 'JP' },
+      { id: 'maya', name: 'マヤ (Maya)', image: '/images/contestants/maya.jpg', company: 'JYP', rank: 3, nationality: 'JP' },
+    ]
+  }
+];
