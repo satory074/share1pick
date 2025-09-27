@@ -20,7 +20,7 @@ npm start
 
 ## Architecture Overview
 
-This is a Next.js 14 application using App Router for a survival audition show 1-pick sharing platform. The app allows users to select their favorite contestant from various K-pop survival shows and generate shareable images.
+This is a Next.js 15 application using App Router for a survival audition show 1-pick sharing platform. The app allows users to select their favorite contestant from various K-pop survival shows and generate shareable images. Built with TypeScript, Tailwind CSS, and Framer Motion for animations.
 
 ### Core Data Flow
 1. **Show Selection**: Users browse shows on the homepage (`src/app/page.tsx`)
@@ -85,4 +85,25 @@ The `shareUtils.ts` provides:
 
 ## Deployment Notes
 
-Configured for Vercel deployment with Tokyo region (nrt1). Static assets are cached for 1 year. The app is optimized for Japanese and Korean audiences interested in K-pop survival shows.
+Configured for Vercel deployment with Tokyo region (hnd1). Static assets are cached for 1 year. The app is optimized for Japanese and Korean audiences interested in K-pop survival shows.
+
+## Production URL
+
+The application is deployed at: https://share1pick.vercel.app
+
+## Key Implementation Details
+
+- **No authentication required**: Users can immediately select and share without signing up
+- **Client-side storage**: User selections stored in localStorage for session persistence
+- **Placeholder images**: Contestants use fallback placeholder images if actual images fail to load
+- **Mobile-first design**: Fully responsive across mobile, tablet, and desktop
+- **Error handling**: Graceful fallbacks for failed image generation and sharing
+
+## Technology Stack
+
+- **Framework**: Next.js 15 with App Router and Turbopack
+- **Styling**: Tailwind CSS 4
+- **Animations**: Framer Motion
+- **Image Generation**: html2canvas
+- **Types**: TypeScript with strict mode
+- **Deployment**: Vercel with Tokyo region (hnd1)
