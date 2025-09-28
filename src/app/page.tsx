@@ -9,12 +9,7 @@ import { useSelections } from '@/hooks/useSelections';
 export default function Home() {
   const { getSelectionCount, hasSelection } = useSelections();
 
-  const groupedShows = shows.reduce((acc, show) => {
-    const category = show.id.includes('produce101-japan') || show.id === 'nizi-project' ? 'japan' : 'korea';
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(show);
-    return acc;
-  }, {} as Record<string, Show[]>);
+  const sortedShows = [...shows].sort((a, b) => a.year - b.year);
 
   const selectionCount = getSelectionCount();
 
@@ -59,19 +54,14 @@ export default function Home() {
           )}
         </header>
 
-        {Object.entries(groupedShows).map(([category, categoryShows], categoryIndex) => (
-          <motion.section
-            key={category}
-            className="mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: categoryIndex * 0.2 }}
-          >
-            <h2 className="text-3xl font-semibold text-gray-700 dark:text-gray-200 mb-6 capitalize">
-              {category === 'japan' ? '日本版' : '韓国版'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {categoryShows.map((show, index) => (
+        <motion.section
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="space-y-4">
+            {sortedShows.map((show, index) => (
                 <motion.div
                   key={show.id}
                   initial={{ opacity: 0, scale: 0.9 }}
@@ -115,7 +105,7 @@ export default function Home() {
                         {show.description}
                       </p>
 
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-3">
                         <span className="text-sm text-gray-600 dark:text-gray-300">
                           {show.contestants.length}人の参加者
                         </span>
@@ -129,13 +119,29 @@ export default function Home() {
                            show.status === 'ongoing' ? '放送中' : '放送予定'}
                         </span>
                       </div>
+
+                      {show.officialWebsite && (
+                        <div className="mt-auto">
+                          <a
+                            href={show.officialWebsite}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            🌐 公式サイト
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </Link>
                 </motion.div>
-              ))}
-            </div>
-          </motion.section>
-        ))}
+            ))}
+          </div>
+        </motion.section>
       </div>
     </div>
   );
