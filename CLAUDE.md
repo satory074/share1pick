@@ -24,18 +24,26 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 
 ### Core Data Flow
 1. **Show Selection**: Users browse shows on the homepage (`src/app/page.tsx`)
-2. **Contestant Selection**: Users select a contestant on show detail pages (`src/app/show/[id]/page.tsx`)
-3. **Image Generation**: Creates shareable images using `html2canvas` via `ShareImagePreview` component
-4. **Social Sharing**: Generates platform-specific text and hashtags through `shareUtils.ts`
+2. **Contestant Selection**: Users select contestants on show detail pages (`src/app/show/[id]/page.tsx`)
+3. **Multi-Pick Management**: Users can select from multiple shows and view their collection (`src/app/my-picks/page.tsx`)
+4. **Image Generation**: Creates shareable images using `html2canvas` via `ShareImagePreview` or `MultiPickShareImage` components
+5. **Social Sharing**: Generates platform-specific text and hashtags through `shareUtils.ts`
 
 ### Key Components
 - `ContestantCard`: Individual contestant display with ranking, nationality, company info
 - `ContestantFilter`: Search, sort, and filter contestants by name, company, or nationality
-- `ShareImagePreview`: Generates the visual 1-pick card for image export
+- `ShareImagePreview`: Generates the visual 1-pick card for single contestant image export
+- `MultiPickShareImage`: Generates collage-style images for multiple selections with responsive grid layout
 - `ShareActions`: Manages sharing options, text generation, and social media integration
+- `useSelections`: Custom hook for managing multiple selections in localStorage with legacy migration
 
 ### Data Management
 All show and contestant data is statically defined in `src/data/shows.ts`. No external APIs or databases are used. Images are referenced by path but use placeholder fallbacks.
+
+**Selection Storage**: The app uses localStorage to persist user selections across sessions:
+- `allSelections`: Object mapping showId to UserSelection for multi-pick functionality
+- `lastSelection`: Legacy single selection (automatically migrated to allSelections)
+- Selections are managed through the `useSelections` hook with type-safe operations
 
 ## Adding New Shows
 
@@ -63,25 +71,37 @@ To add a new survival audition show, modify `src/data/shows.ts`:
 }
 ```
 
-Also update the hashtag mapping in `src/lib/shareUtils.ts` `generateHashtags()` function for show-specific social media tags.
+Also update the hashtag mapping in both `generateHashtags()` and `generateMultiPickShareText()` functions in `src/lib/shareUtils.ts` for show-specific social media tags.
 
 ## Image Generation System
 
-The app uses `html2canvas` to convert the `ShareImagePreview` component into downloadable PNG images. The component is designed with a fixed 400x600px layout optimized for social media sharing.
+The app uses `html2canvas` to convert React components into downloadable PNG images:
+
+**Single Pick**: `ShareImagePreview` component with fixed 400x600px layout for individual contestant sharing.
+
+**Multi-Pick**: `MultiPickShareImage` component with responsive grid layout that adjusts dimensions based on selection count:
+- 1 pick: 400x600px (single column)
+- 2 picks: 600x400px (2 columns, 1 row)
+- 3-4 picks: 600x700px (2 columns, 2 rows)
+- 5-6 picks: 800x600px (3 columns, 2 rows)
+- 7-9 picks: 800x800px (3 columns, 3 rows)
+- 10+ picks: 1000x800px (4 columns, 3 rows)
 
 ## Share Text Generation
 
 The `shareUtils.ts` provides:
 - **Dynamic hashtags**: Show-specific tags plus common ones (#1pick, #Share1Pick)
 - **Multiple templates**: Random selection from 3 different sharing text formats
+- **Multi-pick support**: `generateMultiPickShareText()` combines hashtags from all selected shows
 - **Nationality mapping**: Converts country codes to emoji flags
 - **Clipboard integration**: Copy sharing text for manual posting
 
 ## Routing Structure
 
-- `/` - Homepage with show grid
-- `/show/[id]` - Dynamic show detail pages with contestant selection
-- Static generation for homepage, dynamic rendering for show pages
+- `/` - Homepage with show grid, selection badges, and My 1Picks navigation button
+- `/show/[id]` - Dynamic show detail pages with contestant selection and cross-navigation to My Picks
+- `/my-picks` - Multi-pick collection page with combined sharing functionality
+- Static generation for homepage, dynamic rendering for show and my-picks pages
 
 ## Deployment Notes
 
@@ -94,10 +114,12 @@ The application is deployed at: https://share1pick.vercel.app
 ## Key Implementation Details
 
 - **No authentication required**: Users can immediately select and share without signing up
-- **Client-side storage**: User selections stored in localStorage for session persistence
+- **Multi-pick functionality**: Users can select one contestant per show and collect them across multiple shows
+- **Client-side storage**: User selections stored in localStorage with automatic legacy migration from single to multi-pick format
 - **Placeholder images**: Contestants use fallback placeholder images if actual images fail to load
-- **Mobile-first design**: Fully responsive across mobile, tablet, and desktop
+- **Mobile-first design**: Fully responsive across mobile, tablet, and desktop with adaptive grid layouts
 - **Error handling**: Graceful fallbacks for failed image generation and sharing
+- **State management**: Centralized selection logic through `useSelections` hook with type-safe operations
 
 ## Technology Stack
 

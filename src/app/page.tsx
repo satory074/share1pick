@@ -48,11 +48,11 @@ export default function Home() {
             >
               <Link
                 href="/my-picks"
-                className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-lg"
+                className="inline-flex items-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg"
               >
-                My 1Picks
-                <span className="ml-2 bg-white text-purple-600 px-2 py-1 rounded-full text-sm font-bold">
-                  {selectionCount}
+                🎉 シェアする
+                <span className="ml-3 bg-white text-purple-600 px-3 py-1.5 rounded-full text-sm font-bold">
+                  {selectionCount}件
                 </span>
               </Link>
             </motion.div>

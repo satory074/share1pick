@@ -9,13 +9,15 @@ interface ContestantCardProps {
   isSelected: boolean;
   onClick: () => void;
   index: number;
+  disabled?: boolean;
 }
 
 export default function ContestantCard({
   contestant,
   isSelected,
   onClick,
-  index
+  index,
+  disabled = false
 }: ContestantCardProps) {
   const getNationalityFlag = (nationality?: string): string => {
     const flagMap: Record<string, string> = {
@@ -43,12 +45,15 @@ export default function ContestantCard({
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: index * 0.05 }}
-      whileHover={{ scale: 1.05, y: -5 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      whileHover={disabled ? {} : { scale: 1.05, y: -5 }}
+      whileTap={disabled ? {} : { scale: 0.95 }}
+      onClick={disabled ? undefined : onClick}
       className={`
-        bg-white dark:bg-gray-800 rounded-xl p-4 cursor-pointer transition-all duration-300
-        hover:shadow-xl border-2 group
+        bg-white dark:bg-gray-800 rounded-xl p-4 transition-all duration-300 border-2 group
+        ${disabled
+          ? 'cursor-not-allowed opacity-50'
+          : 'cursor-pointer hover:shadow-xl'
+        }
         ${isSelected
           ? 'border-purple-500 shadow-lg ring-2 ring-purple-200 dark:ring-purple-800'
           : 'border-transparent hover:border-purple-300 shadow-md hover:shadow-lg'}
