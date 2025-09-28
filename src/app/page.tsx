@@ -4,14 +4,19 @@ import { shows } from '@/data/shows';
 import { Show } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSelections } from '@/hooks/useSelections';
 
 export default function Home() {
+  const { getSelectionCount, hasSelection } = useSelections();
+
   const groupedShows = shows.reduce((acc, show) => {
     const category = show.id.includes('produce101-japan') || show.id === 'nizi-project' ? 'japan' : 'korea';
     if (!acc[category]) acc[category] = [];
     acc[category].push(show);
     return acc;
   }, {} as Record<string, Show[]>);
+
+  const selectionCount = getSelectionCount();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
@@ -33,6 +38,25 @@ export default function Home() {
           >
             サバイバルオーディション番組の1pickを選んでシェアしよう
           </motion.p>
+
+          {selectionCount > 0 && (
+            <motion.div
+              className="mt-6"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <Link
+                href="/my-picks"
+                className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-lg"
+              >
+                My 1Picks
+                <span className="ml-2 bg-white text-purple-600 px-2 py-1 rounded-full text-sm font-bold">
+                  {selectionCount}
+                </span>
+              </Link>
+            </motion.div>
+          )}
         </header>
 
         {Object.entries(groupedShows).map(([category, categoryShows], categoryIndex) => (
@@ -54,8 +78,13 @@ export default function Home() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                   whileHover={{ scale: 1.05 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
                 >
+                  {hasSelection(show.id) && (
+                    <div className="absolute top-3 right-3 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                      選択済み
+                    </div>
+                  )}
                   <Link href={`/show/${show.id}`}>
                     <div className="p-6">
                       <div className="flex items-center justify-between mb-3">

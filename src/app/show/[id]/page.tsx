@@ -1,7 +1,7 @@
 'use client';
 
 import { shows } from '@/data/shows';
-import { Contestant, UserSelection } from '@/types';
+import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
@@ -10,6 +10,7 @@ import ShareImagePreview from '@/components/ShareImagePreview';
 import ShareActions from '@/components/ShareActions';
 import ContestantFilter from '@/components/ContestantFilter';
 import ContestantCard from '@/components/ContestantCard';
+import { useSelections } from '@/hooks/useSelections';
 
 interface ShowPageProps {
   params: Promise<{ id: string }>;
@@ -20,6 +21,7 @@ export default function ShowPage({ params }: ShowPageProps) {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [filteredContestants, setFilteredContestants] = useState<Contestant[]>([]);
+  const { addSelection, getSelection, getSelectionCount } = useSelections();
 
   useEffect(() => {
     params.then(setResolvedParams);
@@ -30,9 +32,17 @@ export default function ShowPage({ params }: ShowPageProps) {
       const show = shows.find(s => s.id === resolvedParams.id);
       if (show) {
         setFilteredContestants(show.contestants);
+
+        const existingSelection = getSelection(show.id);
+        if (existingSelection) {
+          const existingContestant = show.contestants.find(c => c.id === existingSelection.contestantId);
+          if (existingContestant) {
+            setSelectedContestant(existingContestant);
+          }
+        }
       }
     }
-  }, [resolvedParams]);
+  }, [resolvedParams, getSelection]);
 
   if (!resolvedParams) {
     return <div>Loading...</div>;
@@ -57,14 +67,7 @@ export default function ShowPage({ params }: ShowPageProps) {
 
   const handleContestantSelect = (contestant: Contestant) => {
     setSelectedContestant(contestant);
-
-    const selection: UserSelection = {
-      showId: show.id,
-      contestantId: contestant.id,
-      timestamp: Date.now()
-    };
-
-    localStorage.setItem('lastSelection', JSON.stringify(selection));
+    addSelection(show.id, contestant.id);
   };
 
   const generateShareImage = async () => {
@@ -142,6 +145,17 @@ export default function ShowPage({ params }: ShowPageProps) {
                 <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
                   あなたの1pickは <span className="font-semibold text-purple-600">{selectedContestant.name}</span> です！
                 </p>
+
+                {getSelectionCount() > 1 && (
+                  <div className="mb-4">
+                    <Link
+                      href="/my-picks"
+                      className="inline-flex items-center text-purple-600 hover:text-purple-800 text-sm underline"
+                    >
+                      全ての1picks ({getSelectionCount()}件) を見る →
+                    </Link>
+                  </div>
+                )}
 
                 <ShareActions
                   show={show}

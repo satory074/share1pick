@@ -24,3 +24,12 @@ export interface UserSelection {
   contestantId: string;
   timestamp: number;
 }
+
+export interface AllUserSelections {
+  [showId: string]: UserSelection;
+}
+
+export interface MultiPickData {
+  show: Show;
+  contestant: Contestant;
+}
