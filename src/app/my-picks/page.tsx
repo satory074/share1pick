@@ -101,56 +101,81 @@ export default function MyPicksPage() {
     if (multiPicks.length === 0) return;
 
     setIsGeneratingImage(true);
+
+    let imageBlob: Blob | null = null;
+    let twitterText = '';
+
     try {
-      const imageBlob = await generateShareImageBlob();
-      const twitterText = generateTwitterShareText(multiPicks);
+      // 画像を生成
+      imageBlob = await generateShareImageBlob();
+      twitterText = generateTwitterShareText(multiPicks);
 
       if (!imageBlob) {
         alert('画像の生成に失敗しました。');
+        setIsGeneratingImage(false);
         return;
       }
 
-      // Web Share API をサポートしているか確認
-      if (navigator.share && navigator.canShare) {
-        const file = new File([imageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
-          type: 'image/png',
-        });
+      console.log('Image blob generated successfully');
 
-        const shareData = {
-          text: twitterText,
-          files: [file],
-        };
+      // Web Share API の利用を試みる
+      let webShareSuccess = false;
 
-        // ファイル共有がサポートされているか確認
-        if (navigator.canShare(shareData)) {
-          try {
+      if (typeof navigator.share !== 'undefined' && typeof navigator.canShare !== 'undefined') {
+        try {
+          const file = new File([imageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
+            type: 'image/png',
+          });
+
+          const shareData = {
+            text: twitterText,
+            files: [file],
+          };
+
+          console.log('Checking if can share with files...');
+
+          if (navigator.canShare(shareData)) {
+            console.log('Web Share API with files is supported, attempting to share...');
             await navigator.share(shareData);
+            console.log('Web Share API succeeded');
+            webShareSuccess = true;
+            setIsGeneratingImage(false);
             return;
-          } catch (error) {
-            // ユーザーがキャンセルした場合など
-            if ((error as Error).name !== 'AbortError') {
-              console.error('Web Share API error:', error);
-            } else {
-              return; // キャンセルされた場合は何もしない
-            }
+          } else {
+            console.log('Web Share API does not support file sharing');
           }
+        } catch (error) {
+          const err = error as Error;
+          if (err.name === 'AbortError') {
+            console.log('User cancelled the share');
+            webShareSuccess = true; // ユーザーがキャンセルした場合は成功扱い
+            setIsGeneratingImage(false);
+            return;
+          }
+          console.warn('Web Share API failed, will fallback to Twitter Web Intent:', err);
         }
+      } else {
+        console.log('Web Share API not available');
       }
 
       // Web Share API が使えない場合は Twitter Web Intent にフォールバック
-      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}`;
-      window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+      if (!webShareSuccess) {
+        console.log('Using Twitter Web Intent fallback');
+        const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}`;
+        window.open(tweetUrl, '_blank', 'noopener,noreferrer');
 
-      // 画像は別途ダウンロードするよう促す
-      alert('画像をダウンロードして、手動で添付してください。');
-      const link = document.createElement('a');
-      link.download = `my-allstar-1picks-${multiPicks.length}shows.png`;
-      link.href = URL.createObjectURL(imageBlob);
-      link.click();
-      URL.revokeObjectURL(link.href);
+        // 画像は別途ダウンロード
+        const link = document.createElement('a');
+        link.download = `my-allstar-1picks-${multiPicks.length}shows.png`;
+        link.href = URL.createObjectURL(imageBlob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        alert('Xのタブが開きました。ダウンロードした画像を手動で添付してください。');
+      }
     } catch (error) {
       console.error('Failed to share to Twitter:', error);
-      alert('Xへの共有に失敗しました。');
+      alert(`Xへの共有に失敗しました。\nエラー: ${(error as Error).message}`);
     } finally {
       setIsGeneratingImage(false);
     }
