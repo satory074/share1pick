@@ -9,14 +9,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev
 
 # Production build (does NOT use Turbopack - uses standard Next.js build)
-# Includes linting and type checking
+# Includes linting
 npm run build
 
 # Lint code
 npm run lint
-
-# Type check only
-npm run typecheck
 
 # Start production server locally
 npm start
@@ -57,7 +54,7 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 - ❌ No company/agency display
 - ❌ No nationality display
 - ❌ No rank/position display
-- ✅ Clean focus on contestant names only (displayName + optional furigana)
+- ✅ Clean focus on contestant names only (displayName + optional furigana in Katakana)
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
@@ -91,7 +88,7 @@ To add a new survival audition show, modify `src/data/shows.ts`:
     {
       id: 'unique-contestant-id',
       displayName: '김채원',
-      furigana: 'Kim Chaewon', // Optional: pronunciation/reading
+      furigana: 'キム・チェウォン', // IMPORTANT: Must be in Katakana format with middle dot (・)
       image: '/images/contestants/image.jpg'
     }
   ]
@@ -249,9 +246,14 @@ src/
 **Show Interface**: Core `Show` type includes `officialWebsite?: string` field for external website links. Shows are organized chronologically in a single-column list layout on the homepage.
 
 **Contestant Interface**: Each contestant record includes:
-- `displayName`: The main display name (e.g., "김채원")
-- `furigana`: Optional pronunciation/reading (e.g., "Kim Chaewon")
-- `image`: Path to contestant image
+- `displayName`: The main display name (e.g., "김채원", "宮脇咲良")
+- `furigana`: Optional pronunciation/reading in **Katakana format** (e.g., "キム・チェウォン", "ミヤワキ・サクラ")
+  - **IMPORTANT**: All furigana must be in Katakana, not Romanized
+  - Use middle dot (・) separator for multi-part names
+  - Korean names: Based on Korean pronunciation (e.g., 강다니엘 → "カン・ダニエル")
+  - Japanese names: Standard Katakana reading (e.g., 笠原桃奈 → "カサハラ・モモナ")
+  - Chinese names: Based on Chinese pronunciation (e.g., 許豊凡 → "シュー・フォンファン")
+- `image`: Path to contestant image (local or external URL)
 - `id`: Unique identifier
 
 **Comprehensive Data**:
