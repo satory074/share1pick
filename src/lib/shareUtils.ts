@@ -82,6 +82,56 @@ export function generateMultiPickShareText(multiPicks: MultiPickData[]): string 
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
+export function generateContestantHashtag(contestantName: string, furigana?: string): string {
+  // ふりがながカタカナの場合（日本人参加者）はカタカナからハッシュタグを生成
+  if (furigana && /^[\u30A0-\u30FF・]+$/.test(furigana)) {
+    // 中点（・）を除去してハッシュタグ化
+    return furigana.replace(/・/g, '');
+  }
+  // それ以外（韓国人/中国人参加者など）は元の名前をそのまま使用
+  return contestantName;
+}
+
+export function generateTwitterShareText(multiPicks: MultiPickData[]): string {
+  const baseHashtags = ['1pick', 'Share1Pick'];
+  const allShowTags = new Set<string>();
+  const contestantHashtags: string[] = [];
+
+  multiPicks.forEach(({ show, contestant }) => {
+    // 番組ごとのハッシュタグを収集
+    const showSpecificHashtags = {
+      'produce101': ['PRODUCE101', 'IOI', 'プデュ'],
+      'produce101-s2': ['PRODUCE101SEASON2', 'WannaOne', 'プデュ2'],
+      'produce48': ['PRODUCE48', 'IZONE', 'プデュ48'],
+      'produce-x-101': ['PRODUCEX101', 'X1', 'プデュX'],
+      'produce101-japan': ['PRODUCE101JAPAN', 'JO1', '日プ'],
+      'produce101-japan-s2': ['PRODUCE101JAPAN_SEASON2', 'INI', '日プ2'],
+      'produce101-japan-girls': ['PRODUCE101JAPAN_THE_GIRLS', 'MEI', '日プ女子'],
+      'girls-planet-999': ['GirlsPlanet999', 'Kep1er', 'ガルプラ'],
+      'boys-planet': ['BoysPlanet', 'ZEROBASEONE', 'ZB1', 'ボイプラ'],
+      'i-land': ['ILAND', 'ENHYPEN', 'アイランド'],
+      'r-u-next': ['RUNext', 'ILLIT', 'アルネク'],
+      'nizi-project': ['NiziProject', 'NiziU', '虹プロ']
+    };
+
+    const showTags = showSpecificHashtags[show.id as keyof typeof showSpecificHashtags] || [];
+    showTags.forEach(tag => allShowTags.add(tag));
+
+    // 参加者のハッシュタグを生成
+    const hashtag = generateContestantHashtag(contestant.displayName, contestant.furigana);
+    contestantHashtags.push(`#${hashtag}`);
+  });
+
+  // 全てのハッシュタグを結合
+  const allHashtags = [
+    ...contestantHashtags,
+    ...baseHashtags.map(tag => `#${tag}`),
+    ...Array.from(allShowTags).map(tag => `#${tag}`)
+  ].join(' ');
+
+  return `私のオールスター1pickコレクション🎤\n\n${allHashtags}`;
+}
+
 export function copyToClipboard(text: string): Promise<boolean> {
   if (navigator.clipboard) {
     return navigator.clipboard.writeText(text)

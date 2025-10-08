@@ -7,7 +7,7 @@ import { useState } from 'react';
 import html2canvas from 'html2canvas';
 import MultiPickShareImage from '@/components/MultiPickShareImage';
 import Image from 'next/image';
-import { generateMultiPickShareText, copyToClipboard } from '@/lib/shareUtils';
+import { generateMultiPickShareText, generateTwitterShareText, copyToClipboard } from '@/lib/shareUtils';
 
 export default function MyPicksPage() {
   const { getAllMultiPickData, getSelectionCount, removeSelection, clearAllSelections } = useSelections();
@@ -16,6 +16,30 @@ export default function MyPicksPage() {
 
   const multiPicks = getAllMultiPickData();
   const selectionCount = getSelectionCount();
+
+  const generateShareImageBlob = async (): Promise<Blob | null> => {
+    if (multiPicks.length === 0) return null;
+
+    try {
+      const element = document.getElementById('multi-pick-share-preview');
+      if (element) {
+        const canvas = await html2canvas(element, {
+          backgroundColor: '#ffffff',
+          scale: 2
+        });
+
+        return new Promise((resolve) => {
+          canvas.toBlob((blob) => {
+            resolve(blob);
+          }, 'image/png');
+        });
+      }
+      return null;
+    } catch (error) {
+      console.error('Failed to generate image blob:', error);
+      return null;
+    }
+  };
 
   const generateShareImage = async () => {
     if (multiPicks.length === 0) return;
@@ -70,6 +94,65 @@ export default function MyPicksPage() {
   const handleClearAll = () => {
     if (confirm(`全ての選択（${selectionCount}件）を削除しますか？`)) {
       clearAllSelections();
+    }
+  };
+
+  const handleTwitterShare = async () => {
+    if (multiPicks.length === 0) return;
+
+    setIsGeneratingImage(true);
+    try {
+      const imageBlob = await generateShareImageBlob();
+      const twitterText = generateTwitterShareText(multiPicks);
+
+      if (!imageBlob) {
+        alert('画像の生成に失敗しました。');
+        return;
+      }
+
+      // Web Share API をサポートしているか確認
+      if (navigator.share && navigator.canShare) {
+        const file = new File([imageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
+          type: 'image/png',
+        });
+
+        const shareData = {
+          text: twitterText,
+          files: [file],
+        };
+
+        // ファイル共有がサポートされているか確認
+        if (navigator.canShare(shareData)) {
+          try {
+            await navigator.share(shareData);
+            return;
+          } catch (error) {
+            // ユーザーがキャンセルした場合など
+            if ((error as Error).name !== 'AbortError') {
+              console.error('Web Share API error:', error);
+            } else {
+              return; // キャンセルされた場合は何もしない
+            }
+          }
+        }
+      }
+
+      // Web Share API が使えない場合は Twitter Web Intent にフォールバック
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(twitterText)}`;
+      window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+
+      // 画像は別途ダウンロードするよう促す
+      alert('画像をダウンロードして、手動で添付してください。');
+      const link = document.createElement('a');
+      link.download = `my-allstar-1picks-${multiPicks.length}shows.png`;
+      link.href = URL.createObjectURL(imageBlob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+    } catch (error) {
+      console.error('Failed to share to Twitter:', error);
+      alert('Xへの共有に失敗しました。');
+    } finally {
+      setIsGeneratingImage(false);
     }
   };
 
@@ -142,6 +225,19 @@ export default function MyPicksPage() {
                   </p>
 
                   <div className="space-y-3">
+                    <button
+                      onClick={handleTwitterShare}
+                      disabled={isGeneratingImage}
+                      className="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                    >
+                      {isGeneratingImage ? '生成中...' : (
+                        <>
+                          <span>Xでシェア</span>
+                          <span>𝕏</span>
+                        </>
+                      )}
+                    </button>
+
                     <button
                       onClick={generateShareImage}
                       disabled={isGeneratingImage}
