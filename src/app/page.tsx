@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 pb-28">
         <header className="text-center mb-12">
           <motion.h1
             className="text-5xl font-bold text-gray-800 dark:text-white mb-4"
@@ -61,25 +61,6 @@ export default function Home() {
           >
             サバイバルオーディション番組の1pickを選んでシェアしよう
           </motion.p>
-
-          {selectionCount > 0 && (
-            <motion.div
-              className="mt-6"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <Link
-                href="/my-picks"
-                className="inline-flex items-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-lg"
-              >
-                🎉 シェアする
-                <span className="ml-3 bg-white text-purple-600 px-3 py-1.5 rounded-full text-sm font-bold">
-                  {selectionCount}件
-                </span>
-              </Link>
-            </motion.div>
-          )}
         </header>
 
         <motion.section
@@ -110,6 +91,30 @@ export default function Home() {
           </div>
         </motion.section>
       </div>
+
+      {/* Sticky Share Button */}
+      {selectionCount > 0 && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t-2 border-purple-200 dark:border-purple-700 z-50"
+        >
+          <div className="container mx-auto px-4 py-3">
+            <div className="flex justify-center">
+              <Link
+                href="/my-picks"
+                className="inline-flex items-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 md:px-10 md:py-4 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-base md:text-lg"
+              >
+                🎉 シェアする
+                <span className="ml-3 bg-white text-purple-600 px-3 py-1.5 rounded-full text-sm font-bold">
+                  {selectionCount}件
+                </span>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
