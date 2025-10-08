@@ -34,9 +34,9 @@ vercel alias <deployment-url> share1pick.vercel.app
 This is a Next.js 15 application using App Router for a survival audition show 1-pick sharing platform. The app allows users to select their favorite contestant from various K-pop survival shows and generate shareable images. Built with TypeScript, Tailwind CSS, and Framer Motion for animations.
 
 ### Core Data Flow
-1. **Show Selection**: Users browse shows on the homepage (`src/app/page.tsx`)
+1. **Show Selection**: Users browse shows on the homepage (`src/app/page.tsx`) where selected contestants are displayed with images on the right side of show cards
 2. **Contestant Selection**: Users select contestants on show detail pages (`src/app/show/[id]/page.tsx`)
-3. **Auto-Redirect**: After selection, users are automatically redirected back to homepage with success feedback
+3. **Selection Feedback**: After selection, users see success feedback (✅ + contestant name) and stay on the same page to browse other contestants
 4. **Multi-Pick Collection**: Users access their collection via the prominent "🎉 シェアする" button on homepage
 5. **Bulk Sharing**: Users share all selections at once from the My Picks page (`src/app/my-picks/page.tsx`)
 6. **Image Generation**: Creates shareable images using `html2canvas` via `MultiPickShareImage` components
@@ -58,8 +58,8 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
-- **Selection Page**: Shows success feedback (✅ + contestant name) and auto-redirects after 1 second
-- **Homepage**: Prominent gradient "🎉 シェアする" button with selection count badge
+- **Selection Page**: Shows success feedback (✅ + contestant name) and users remain on the page to browse other contestants (no auto-redirect)
+- **Homepage**: Prominent gradient "🎉 シェアする" button with selection count badge. Selected contestants are displayed with images on the right side of show cards (desktop) or below show info (mobile)
 - **Sharing Flow**: Centralized in My Picks page with bulk operations for all selections
 
 ### Data Management
@@ -151,8 +151,8 @@ The `shareUtils.ts` provides:
 
 ## Routing Structure
 
-- `/` - Homepage with chronological show list (single-column layout), selection badges, and prominent "🎉 シェアする" button
-- `/show/[id]` - Dynamic show detail pages with contestant selection and auto-redirect after selection
+- `/` - Homepage with chronological show list (single-column layout), selection badges, selected contestant thumbnails on cards, and prominent "🎉 シェアする" button
+- `/show/[id]` - Dynamic show detail pages with contestant selection (users stay on page after selection)
 - `/my-picks` - Multi-pick collection page with centralized sharing functionality
 - Static generation for homepage, dynamic rendering for show and my-picks pages
 
@@ -178,12 +178,13 @@ The `shareUtils.ts` provides:
 - Common utility functions are in `src/lib/` directory
 - Import from shared utilities instead of duplicating code across components
 
-**User Flow**: The app implements a specific flow where users are automatically redirected to the homepage after making a selection on show detail pages. Do not modify this behavior without user request.
+**User Flow**: After selecting a contestant on show detail pages, users remain on the same page to browse other contestants. They can manually return to the homepage using the "← ホームに戻る" link.
 
 **Component State Management**:
 - `ContestantCard` components become disabled during selection to prevent multiple rapid selections
-- Show detail pages display success feedback with auto-redirect after 1 second
+- Show detail pages display success feedback for 1 second, then re-enable selection without redirecting
 - Selection state is managed globally through the `useSelections` hook with localStorage persistence
+- Homepage show cards use a `ShowCard` component that manages image error state independently for each contestant's thumbnail
 
 ## Deployment Notes
 
@@ -196,6 +197,11 @@ The application is deployed at: https://share1pick.vercel.app
 ## Homepage Layout
 
 The homepage displays shows in a chronological single-column list format (not grid layout), sorted by year from 2016 to 2023. This ensures clear temporal organization and optimal readability across all device sizes.
+
+**Selected Contestant Display**: When a contestant is selected for a show, their information appears on the homepage show card:
+- **Desktop (md and above)**: 2-column layout with show info on the left and contestant image (80x80px or 96x96px) with name on the right
+- **Mobile**: Contestant info appears below show description with image on the left and name on the right in a horizontal layout
+- Uses the same placeholder system as `ContestantCard` (gradient backgrounds with initials) for failed image loads
 
 ## Key Implementation Details
 
