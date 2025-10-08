@@ -5,10 +5,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-# Development server (with Turbopack for faster builds)
+# Development server (uses Turbopack in development only)
 npm run dev
 
-# Production build (includes linting and type checking)
+# Production build (does NOT use Turbopack - uses standard Next.js build)
+# Includes linting and type checking
 npm run build
 
 # Lint code
@@ -20,6 +21,8 @@ npm start
 # Deploy to production
 vercel --prod
 ```
+
+**Important**: Turbopack is ONLY used in development mode (`npm run dev`). Production builds use the standard Next.js compiler for stability. Do not add `--turbopack` flag to the build script.
 
 ## Architecture Overview
 
@@ -92,7 +95,7 @@ The application currently includes comprehensive contestant data for major survi
 - **PRODUCE 48 (2018)**: 55 contestants including IZ*ONE members and AKB48 Group participants
 - **PRODUCE 101 JAPAN (2019)**: Complete JO1 debut lineup (11 members)
 - **PRODUCE 101 JAPAN SEASON2 (2021)**: Complete INI debut lineup (11 members)
-- **PRODUCE 101 JAPAN THE GIRLS (2023)**: Comprehensive dataset with 35 contestants including ME:I debut members (ranks 1-11), finalists (ranks 12-20), and additional contestants (ranks 21-35)
+- **PRODUCE 101 JAPAN THE GIRLS (2023)**: Comprehensive dataset with 97 contestants including ME:I debut members (ranks 1-11), finalists (ranks 12-20), and additional contestants through rank 97. Features official images from https://3rd.produce101.jp/ for 87 contestants
 - **Other shows**: Basic debut member data for remaining shows (PRODUCE X 101, Girls Planet 999, Boys Planet, I-LAND, R U Next?, Nizi Project)
 
 Each show includes official website links displayed on both homepage cards and detail pages.
@@ -146,6 +149,27 @@ The `shareUtils.ts` provides:
 
 ## Critical Implementation Notes
 
+**React 19 Best Practices**:
+- Use the `use()` hook for unwrapping Promises (e.g., params in dynamic routes) instead of nested useEffect patterns
+- This prevents React hydration errors and follows React 19 conventions
+- Example: `const resolvedParams = use(params);` instead of `useEffect(() => params.then(setParams), [params])`
+
+**Avoiding Hydration Errors**:
+- Never nest `<a>` tags (or Next.js `<Link>` components that render as `<a>`)
+- Use `<span>` with `onClick` handlers for nested interactive elements
+- Use `window.open()` for external links inside clickable cards to avoid nesting
+
+**Image Error Handling**:
+- Use React's declarative approach with `useState` for tracking image errors
+- Never manipulate DOM directly (e.g., `e.target.style.display = 'none'`)
+- Use conditional rendering: `{!imageError ? <Image /> : <Placeholder />}`
+- All images should have `loading="lazy"` for performance
+
+**Shared Utilities**:
+- Common functions like `getNationalityFlag()` are in `src/lib/` directory
+- Import from shared utilities instead of duplicating code across components
+- Nationality mappings support: KR, JP, CN, TW, HK, US, CA, AU, VN, ID
+
 **User Flow**: The app implements a specific flow where users are automatically redirected to the homepage after making a selection on show detail pages. Do not modify this behavior without user request.
 
 **Component State Management**:
@@ -178,13 +202,38 @@ The homepage displays shows in a chronological single-column list format (not gr
 
 ## Technology Stack
 
-- **Framework**: Next.js 15.5.4 with App Router and Turbopack
+- **Framework**: Next.js 15.5.4 with App Router (Turbopack for dev only)
 - **Language**: TypeScript 5 with strict mode
-- **Styling**: Tailwind CSS 4
+- **React**: 19.1.0 (uses modern `use()` hook for async operations)
+- **Styling**: Tailwind CSS 4 with PostCSS
 - **Animations**: Framer Motion 12.23.22
 - **Image Generation**: html2canvas 1.4.1
+- **Linting**: ESLint 9 with Next.js config
 - **Deployment**: Vercel with Tokyo region (hnd1)
 - **Package Manager**: npm
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── page.tsx           # Homepage (show list)
+│   ├── show/[id]/         # Dynamic show detail pages
+│   └── my-picks/          # Multi-pick collection & sharing
+├── components/            # React components
+│   ├── ContestantCard.tsx # Individual contestant display
+│   ├── ContestantFilter.tsx # Search/filter/sort UI
+│   └── MultiPickShareImage.tsx # Image generation component
+├── data/
+│   └── shows.ts          # All show & contestant data (single source of truth)
+├── hooks/
+│   └── useSelections.ts  # localStorage management for user selections
+├── lib/                  # Shared utilities
+│   ├── nationalityUtils.ts # Nationality flag mappings
+│   └── shareUtils.ts     # Social sharing text generation
+└── types/
+    └── index.ts          # TypeScript type definitions
+```
 
 ## Data Architecture Notes
 
@@ -195,5 +244,26 @@ The homepage displays shows in a chronological single-column list format (not gr
 **Comprehensive Data**:
 - Major PRODUCE series shows (2016-2018) include extensive contestant rosters beyond just debut members
 - All Japanese PRODUCE series include complete debut group lineups
-- PRODUCE 101 JAPAN THE GIRLS features the most comprehensive dataset with 35 contestants, including post-show career information reflected in company fields (e.g., contestants who joined other groups like MADEIN, UN1CON, cosmosy)
+- PRODUCE 101 JAPAN THE GIRLS features the most comprehensive dataset with 97 contestants, including ME:I debut members (ranks 1-11), finalists (ranks 12-20), and additional contestants through rank 97. 87 contestants use official images from https://3rd.produce101.jp/
 - Supports detailed fan exploration of complete show casts beyond just debut members
+
+## External Image Configuration
+
+**Critical Configuration**: The Next.js configuration allows external images from the official PRODUCE 101 JAPAN THE GIRLS website:
+
+```typescript
+// next.config.ts
+images: {
+  remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: '3rd.produce101.jp',
+      pathname: '/static/produce101s3/profile/**',
+    }
+  ]
+}
+```
+
+This configuration is required for official contestant images to load properly. Without this, images from external domains will be blocked by Next.js security features.
+
+**Adding New External Image Domains**: When adding images from new external sources, update the `remotePatterns` array in `next.config.ts`. Each new domain requires a separate pattern configuration for security.

@@ -1,4 +1,5 @@
 import { Show, Contestant, MultiPickData } from '@/types';
+import { getNationalityFlag } from './nationalityUtils';
 
 export function generateHashtags(show: Show): string[] {
   const baseHashtags = ['1pick', 'Share1Pick'];
@@ -27,7 +28,7 @@ export function generateShareText(show: Show, contestant: Contestant): string {
   const hashtags = generateHashtags(show).map(tag => `#${tag}`).join(' ');
 
   const rankText = contestant.rank ? `（最終順位${contestant.rank}位）` : '';
-  const nationalityEmoji = getNationalityEmoji(contestant.nationality);
+  const nationalityEmoji = getNationalityFlag(contestant.nationality);
 
   const templates = [
     `${show.title}の1pickは${contestant.name}${rankText}です！${nationalityEmoji}\n\n${hashtags}`,
@@ -36,21 +37,6 @@ export function generateShareText(show: Show, contestant: Contestant): string {
   ];
 
   return templates[Math.floor(Math.random() * templates.length)];
-}
-
-function getNationalityEmoji(nationality?: string): string {
-  const emojiMap: Record<string, string> = {
-    'KR': '🇰🇷',
-    'JP': '🇯🇵',
-    'CN': '🇨🇳',
-    'TW': '🇹🇼',
-    'US': '🇺🇸',
-    'CA': '🇨🇦',
-    'AU': '🇦🇺',
-    'VN': '🇻🇳'
-  };
-
-  return emojiMap[nationality || ''] || '🌟';
 }
 
 export function generateOGPImageUrl(show: Show, contestant: Contestant): string {
@@ -88,7 +74,7 @@ export function generateMultiPickShareText(multiPicks: MultiPickData[]): string 
   const picksList = multiPicks
     .map(({ show, contestant }) => {
       const rankText = contestant.rank ? `（#${contestant.rank}）` : '';
-      const nationalityEmoji = getNationalityEmoji(contestant.nationality);
+      const nationalityEmoji = getNationalityFlag(contestant.nationality);
       return `${show.title}: ${contestant.name}${rankText}${nationalityEmoji}`;
     })
     .join('\n');

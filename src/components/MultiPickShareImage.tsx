@@ -57,7 +57,7 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                 key={`${show.id}-${contestant.id}`}
                 className="bg-white/10 rounded-lg p-3 flex flex-col items-center text-center backdrop-blur-sm"
               >
-                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 mb-2 bg-white/10 flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 mb-2 bg-white/10 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
                   <Image
                     src={contestant.image}
                     alt={contestant.name}
@@ -66,7 +66,11 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
-                      target.src = `https://via.placeholder.com/64x64/6B7280/FFFFFF?text=${encodeURIComponent(contestant.name.split(' ')[0])}`;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.textContent = contestant.name.charAt(0);
+                      }
                     }}
                   />
                 </div>

@@ -212,16 +212,21 @@ export default function MyPicksPage() {
                       </div>
 
                       <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0">
+                        <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
                           <Image
                             src={contestant.image}
                             alt={contestant.name}
                             width={64}
                             height={64}
                             className="w-full h-full object-cover"
+                            loading="lazy"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
-                              target.src = `https://via.placeholder.com/64x64/6B7280/FFFFFF?text=${encodeURIComponent(contestant.name.split(' ')[0])}`;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.textContent = contestant.name.charAt(0);
+                              }
                             }}
                           />
                         </div>

@@ -4,7 +4,7 @@ import { shows } from '@/data/shows';
 import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import ContestantFilter from '@/components/ContestantFilter';
 import ContestantCard from '@/components/ContestantCard';
@@ -15,37 +15,27 @@ interface ShowPageProps {
 }
 
 export default function ShowPage({ params }: ShowPageProps) {
+  const resolvedParams = use(params);
   const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
   const [filteredContestants, setFilteredContestants] = useState<Contestant[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const { addSelection, getSelection } = useSelections();
   const router = useRouter();
 
   useEffect(() => {
-    params.then(setResolvedParams);
-  }, [params]);
+    const show = shows.find(s => s.id === resolvedParams.id);
+    if (show) {
+      setFilteredContestants(show.contestants);
 
-  useEffect(() => {
-    if (resolvedParams) {
-      const show = shows.find(s => s.id === resolvedParams.id);
-      if (show) {
-        setFilteredContestants(show.contestants);
-
-        const existingSelection = getSelection(show.id);
-        if (existingSelection) {
-          const existingContestant = show.contestants.find(c => c.id === existingSelection.contestantId);
-          if (existingContestant) {
-            setSelectedContestant(existingContestant);
-          }
+      const existingSelection = getSelection(show.id);
+      if (existingSelection) {
+        const existingContestant = show.contestants.find(c => c.id === existingSelection.contestantId);
+        if (existingContestant) {
+          setSelectedContestant(existingContestant);
         }
       }
     }
-  }, [resolvedParams, getSelection]);
-
-  if (!resolvedParams) {
-    return <div>Loading...</div>;
-  }
+  }, [resolvedParams.id, getSelection]);
 
   const show = shows.find(s => s.id === resolvedParams.id);
 

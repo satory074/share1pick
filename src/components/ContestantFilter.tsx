@@ -3,6 +3,7 @@
 import { Contestant } from '@/types';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { getNationalityFlag } from '@/lib/nationalityUtils';
 
 interface ContestantFilterProps {
   contestants: Contestant[];
@@ -66,20 +67,6 @@ export default function ContestantFilter({ contestants, onFilter }: ContestantFi
     setSortBy('rank');
     setFilterByNationality('all');
     onFilter(contestants);
-  };
-
-  const getNationalityFlag = (nationality: string): string => {
-    const flagMap: Record<string, string> = {
-      'KR': '🇰🇷',
-      'JP': '🇯🇵',
-      'CN': '🇨🇳',
-      'TW': '🇹🇼',
-      'US': '🇺🇸',
-      'CA': '🇨🇦',
-      'AU': '🇦🇺',
-      'VN': '🇻🇳'
-    };
-    return flagMap[nationality] || '🌟';
   };
 
   return (

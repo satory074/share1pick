@@ -1,7 +1,6 @@
 'use client';
 
 import { shows } from '@/data/shows';
-import { Show } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useSelections } from '@/hooks/useSelections';
@@ -75,68 +74,67 @@ export default function Home() {
                       選択済み
                     </div>
                   )}
-                  <Link href={`/show/${show.id}`}>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className={`
-                          px-3 py-1 rounded-full text-xs font-semibold
-                          ${show.type === 'male' ? 'bg-blue-100 text-blue-800' :
-                            show.type === 'female' ? 'bg-pink-100 text-pink-800' :
-                            'bg-purple-100 text-purple-800'}
-                        `}>
-                          {show.type === 'male' ? '男性' : show.type === 'female' ? '女性' : '混合'}
-                        </span>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
-                          {show.year}年
-                        </span>
-                      </div>
-
-                      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                        {show.title}
-                      </h3>
-
-                      {show.debutGroup && (
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                          デビューグループ: <span className="font-semibold">{show.debutGroup}</span>
-                        </p>
-                      )}
-
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        {show.description}
-                      </p>
-
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {show.contestants.length}人の参加者
-                        </span>
-                        <span className={`
-                          px-2 py-1 rounded text-xs
-                          ${show.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            show.status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-gray-100 text-gray-800'}
-                        `}>
-                          {show.status === 'completed' ? '完了' :
-                           show.status === 'ongoing' ? '放送中' : '放送予定'}
-                        </span>
-                      </div>
-
-                      {show.officialWebsite && (
-                        <div className="mt-auto">
-                          <a
-                            href={show.officialWebsite}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            🌐 公式サイト
-                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </div>
-                      )}
+                  <Link href={`/show/${show.id}`} className="block p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`
+                        px-3 py-1 rounded-full text-xs font-semibold
+                        ${show.type === 'male' ? 'bg-blue-100 text-blue-800' :
+                          show.type === 'female' ? 'bg-pink-100 text-pink-800' :
+                          'bg-purple-100 text-purple-800'}
+                      `}>
+                        {show.type === 'male' ? '男性' : show.type === 'female' ? '女性' : '混合'}
+                      </span>
+                      <span className="text-sm text-gray-500 dark:text-gray-400">
+                        {show.year}年
+                      </span>
                     </div>
+
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                      {show.title}
+                    </h3>
+
+                    {show.debutGroup && (
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                        デビューグループ: <span className="font-semibold">{show.debutGroup}</span>
+                      </p>
+                    )}
+
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      {show.description}
+                    </p>
+
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm text-gray-600 dark:text-gray-300">
+                        {show.contestants.length}人の参加者
+                      </span>
+                      <span className={`
+                        px-2 py-1 rounded text-xs
+                        ${show.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          show.status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-gray-100 text-gray-800'}
+                      `}>
+                        {show.status === 'completed' ? '完了' :
+                         show.status === 'ongoing' ? '放送中' : '放送予定'}
+                      </span>
+                    </div>
+
+                    {show.officialWebsite && (
+                      <div className="mt-auto">
+                        <span
+                          className="inline-flex items-center text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium cursor-pointer"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.open(show.officialWebsite, '_blank', 'noopener,noreferrer');
+                          }}
+                        >
+                          🌐 公式サイト
+                          <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </span>
+                      </div>
+                    )}
                   </Link>
                 </motion.div>
             ))}

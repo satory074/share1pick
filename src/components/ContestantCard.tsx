@@ -3,6 +3,8 @@
 import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { useState } from 'react';
+import { getNationalityFlag } from '@/lib/nationalityUtils';
 
 interface ContestantCardProps {
   contestant: Contestant;
@@ -19,19 +21,7 @@ export default function ContestantCard({
   index,
   disabled = false
 }: ContestantCardProps) {
-  const getNationalityFlag = (nationality?: string): string => {
-    const flagMap: Record<string, string> = {
-      'KR': '🇰🇷',
-      'JP': '🇯🇵',
-      'CN': '🇨🇳',
-      'TW': '🇹🇼',
-      'US': '🇺🇸',
-      'CA': '🇨🇦',
-      'AU': '🇦🇺',
-      'VN': '🇻🇳'
-    };
-    return flagMap[nationality || ''] || '🌟';
-  };
+  const [imageError, setImageError] = useState(false);
 
   const getRankColor = (rank?: number): string => {
     if (!rank) return 'text-gray-500';
@@ -104,24 +94,24 @@ export default function ContestantCard({
     >
       <div className="relative">
         <div className={`aspect-square mb-3 rounded-xl overflow-hidden bg-gradient-to-br ${getGradientColor(contestant.name, contestant.rank)} flex items-center justify-center relative`}>
-          <Image
-            src={contestant.image}
-            alt={contestant.name}
-            width={120}
-            height={120}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              target.nextElementSibling!.classList.remove('hidden');
-            }}
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-bold hidden">
-            <span className="text-2xl mb-1">{getInitials(contestant.name)}</span>
-            {contestant.rank && (
-              <span className="text-xs opacity-80">#{contestant.rank}</span>
-            )}
-          </div>
+          {!imageError ? (
+            <Image
+              src={contestant.image}
+              alt={contestant.name}
+              width={120}
+              height={120}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-bold">
+              <span className="text-2xl mb-1">{getInitials(contestant.name)}</span>
+              {contestant.rank && (
+                <span className="text-xs opacity-80">#{contestant.rank}</span>
+              )}
+            </div>
+          )}
 
           {contestant.rank && contestant.rank <= 3 && (
             <div className="absolute top-2 right-2 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
