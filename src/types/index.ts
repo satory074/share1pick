@@ -1,10 +1,8 @@
 export interface Contestant {
   id: string;
-  name: string;
+  displayName: string;
+  furigana?: string;
   image: string;
-  company?: string;
-  rank?: number;
-  nationality?: string;
 }
 
 export interface Show {

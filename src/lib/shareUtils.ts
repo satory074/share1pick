@@ -1,5 +1,4 @@
 import { Show, Contestant, MultiPickData } from '@/types';
-import { getNationalityFlag } from './nationalityUtils';
 
 export function generateHashtags(show: Show): string[] {
   const baseHashtags = ['1pick', 'Share1Pick'];
@@ -27,13 +26,10 @@ export function generateHashtags(show: Show): string[] {
 export function generateShareText(show: Show, contestant: Contestant): string {
   const hashtags = generateHashtags(show).map(tag => `#${tag}`).join(' ');
 
-  const rankText = contestant.rank ? `（最終順位${contestant.rank}位）` : '';
-  const nationalityEmoji = getNationalityFlag(contestant.nationality);
-
   const templates = [
-    `${show.title}の1pickは${contestant.name}${rankText}です！${nationalityEmoji}\n\n${hashtags}`,
-    `私の${show.title} 1pickを発表🎤\n✨ ${contestant.name} ${rankText}${nationalityEmoji}\n\n${hashtags}`,
-    `${show.title}で推してたのは${contestant.name}${rankText}！${nationalityEmoji}\nみんなの1pickは誰？\n\n${hashtags}`
+    `${show.title}の1pickは${contestant.displayName}です！\n\n${hashtags}`,
+    `私の${show.title} 1pickを発表🎤\n✨ ${contestant.displayName}\n\n${hashtags}`,
+    `${show.title}で推してたのは${contestant.displayName}！\nみんなの1pickは誰？\n\n${hashtags}`
   ];
 
   return templates[Math.floor(Math.random() * templates.length)];
@@ -73,9 +69,7 @@ export function generateMultiPickShareText(multiPicks: MultiPickData[]): string 
 
   const picksList = multiPicks
     .map(({ show, contestant }) => {
-      const rankText = contestant.rank ? `（#${contestant.rank}）` : '';
-      const nationalityEmoji = getNationalityFlag(contestant.nationality);
-      return `${show.title}: ${contestant.name}${rankText}${nationalityEmoji}`;
+      return `${show.title}: ${contestant.displayName}`;
     })
     .join('\n');
 

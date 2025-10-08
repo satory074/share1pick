@@ -6,9 +6,9 @@
 
 - **番組選択**: PRODUCE、Girls Planet、Boys Planet、I-LANDなど主要サバイバルオーディション番組に対応
 - **1pick選択**: 参加者から1人を選択
-- **画像生成**: 美しいシェア用画像を自動生成
+- **マルチピック**: 複数番組から1pickを選んでコレクション作成
+- **画像生成**: 美しいシェア用画像を自動生成（1〜10+枚の柔軟なレイアウト）
 - **SNSシェア**: X(Twitter)での投稿に最適化されたテキストとハッシュタグを自動生成
-- **検索・フィルター**: 参加者の検索、並び替え、国籍フィルター
 - **レスポンシブデザイン**: モバイル・タブレット・デスクトップ対応
 
 ## 🚀 対応番組
@@ -31,12 +31,13 @@
 
 ## 🛠 技術スタック
 
-- **フレームワーク**: Next.js 14 (App Router)
-- **言語**: TypeScript
-- **スタイリング**: Tailwind CSS
-- **アニメーション**: Framer Motion
-- **画像生成**: html2canvas
-- **デプロイ**: Vercel
+- **フレームワーク**: Next.js 15.5.4 (App Router)
+- **言語**: TypeScript 5
+- **React**: 19.1.0
+- **スタイリング**: Tailwind CSS 4
+- **アニメーション**: Framer Motion 12.23.22
+- **画像生成**: html2canvas 1.4.1
+- **デプロイ**: Vercel (Tokyo region)
 
 ## 📦 インストール・開発
 
@@ -70,20 +71,21 @@ npm run lint
 
 ```
 src/
-├── app/                 # Next.js App Router
-│   ├── layout.tsx      # レイアウト
-│   ├── page.tsx        # ホームページ
-│   └── show/[id]/      # 番組詳細ページ
-├── components/         # UIコンポーネント
+├── app/                    # Next.js App Router
+│   ├── page.tsx           # ホームページ (番組一覧)
+│   ├── show/[id]/         # 番組詳細ページ
+│   └── my-picks/          # マルチピックコレクション
+├── components/            # UIコンポーネント
 │   ├── ContestantCard.tsx
-│   ├── ContestantFilter.tsx
-│   ├── ShareActions.tsx
+│   ├── MultiPickShareImage.tsx
 │   └── ShareImagePreview.tsx
-├── data/              # 番組・参加者データ
+├── data/                  # 番組・参加者データ
 │   └── shows.ts
-├── lib/               # ユーティリティ
+├── hooks/                 # カスタムフック
+│   └── useSelections.ts
+├── lib/                   # ユーティリティ
 │   └── shareUtils.ts
-└── types/             # TypeScript型定義
+└── types/                 # TypeScript型定義
     └── index.ts
 ```
 
@@ -102,22 +104,28 @@ src/
   status: 'ongoing',
   debutGroup: 'NEW GROUP',
   description: '番組説明',
+  officialWebsite: 'https://official-site.com/',
   contestants: [
     {
       id: 'contestant-1',
-      name: '参加者名',
-      image: '/images/contestants/contestant-1.jpg',
-      company: '事務所名',
-      rank: 1,
-      nationality: 'KR'
+      displayName: '参加者名',
+      furigana: 'Sankasha Mei', // オプショナル: 読み仮名
+      image: '/images/contestants/contestant-1.jpg'
     }
   ]
 }
 ```
 
+また、`src/lib/shareUtils.ts`のハッシュタグマッピングも更新してください。
+
 ## 🚀 デプロイ
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Vercelへデプロイ
+vercel --prod
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Production URL**: https://share1pick.vercel.app
+
+アプリは東京リージョン（hnd1）にデプロイされています。
 

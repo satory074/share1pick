@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import ContestantFilter from '@/components/ContestantFilter';
 import ContestantCard from '@/components/ContestantCard';
 import { useSelections } from '@/hooks/useSelections';
 
@@ -17,7 +16,6 @@ interface ShowPageProps {
 export default function ShowPage({ params }: ShowPageProps) {
   const resolvedParams = use(params);
   const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
-  const [filteredContestants, setFilteredContestants] = useState<Contestant[]>([]);
   const [isSelecting, setIsSelecting] = useState(false);
   const { addSelection, getSelection } = useSelections();
   const router = useRouter();
@@ -25,8 +23,6 @@ export default function ShowPage({ params }: ShowPageProps) {
   useEffect(() => {
     const show = shows.find(s => s.id === resolvedParams.id);
     if (show) {
-      setFilteredContestants(show.contestants);
-
       const existingSelection = getSelection(show.id);
       if (existingSelection) {
         const existingContestant = show.contestants.find(c => c.id === existingSelection.contestantId);
@@ -124,7 +120,7 @@ export default function ShowPage({ params }: ShowPageProps) {
                 選択完了！
               </h2>
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
-                <span className="font-semibold text-purple-600">{selectedContestant.name}</span> を選択しました
+                <span className="font-semibold text-purple-600">{selectedContestant.displayName}</span> を選択しました
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 ホームページに戻ります...
@@ -133,22 +129,17 @@ export default function ShowPage({ params }: ShowPageProps) {
           </motion.div>
         )}
 
-        <ContestantFilter
-          contestants={show.contestants}
-          onFilter={setFilteredContestants}
-        />
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-            参加者一覧 ({filteredContestants.length}人)
+            参加者一覧 ({show.contestants.length}人)
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {filteredContestants.map((contestant, index) => (
+            {show.contestants.map((contestant, index) => (
               <ContestantCard
                 key={contestant.id}
                 contestant={contestant}
@@ -159,14 +150,6 @@ export default function ShowPage({ params }: ShowPageProps) {
               />
             ))}
           </div>
-
-          {filteredContestants.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-lg text-gray-600 dark:text-gray-400">
-                条件に一致する参加者が見つかりませんでした
-              </p>
-            </div>
-          )}
         </motion.div>
 
         {!selectedContestant && !isSelecting && (

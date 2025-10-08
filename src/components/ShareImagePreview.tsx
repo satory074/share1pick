@@ -34,13 +34,13 @@ export default function ShareImagePreview({ show, contestant }: ShareImagePrevie
           <div className="w-48 h-48 rounded-full overflow-hidden border-4 border-white/30 mb-6 bg-white/10 flex items-center justify-center">
             <Image
               src={contestant.image}
-              alt={contestant.name}
+              alt={contestant.displayName}
               width={192}
               height={192}
               className="w-full h-full object-cover"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
-                target.src = `https://via.placeholder.com/192x192/6B7280/FFFFFF?text=${encodeURIComponent(contestant.name.split(' ')[0])}`;
+                target.src = `https://via.placeholder.com/192x192/6B7280/FFFFFF?text=${encodeURIComponent(contestant.displayName.charAt(0))}`;
               }}
             />
           </div>
@@ -48,16 +48,11 @@ export default function ShareImagePreview({ show, contestant }: ShareImagePrevie
           <div className="text-center">
             <div className="text-3xl font-bold mb-2">MY 1PICK</div>
             <div className="text-xl mb-2 font-semibold">
-              {contestant.name}
+              {contestant.displayName}
             </div>
-            {contestant.rank && (
-              <div className="text-sm opacity-90 mb-2">
-                Final Rank: #{contestant.rank}
-              </div>
-            )}
-            {contestant.company && (
-              <div className="text-xs opacity-80">
-                {contestant.company}
+            {contestant.furigana && (
+              <div className="text-sm opacity-90">
+                {contestant.furigana}
               </div>
             )}
           </div>

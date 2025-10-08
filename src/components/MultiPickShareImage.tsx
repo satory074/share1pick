@@ -60,7 +60,7 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 mb-2 bg-white/10 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
                   <Image
                     src={contestant.image}
-                    alt={contestant.name}
+                    alt={contestant.displayName}
                     width={64}
                     height={64}
                     className="w-full h-full object-cover"
@@ -69,22 +69,17 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                       target.style.display = 'none';
                       const parent = target.parentElement;
                       if (parent) {
-                        parent.textContent = contestant.name.charAt(0);
+                        parent.textContent = contestant.displayName.charAt(0);
                       }
                     }}
                   />
                 </div>
                 <div className="text-xs font-semibold mb-1 truncate w-full">
-                  {contestant.name}
+                  {contestant.displayName}
                 </div>
                 <div className="text-xs opacity-80 truncate w-full">
                   {show.title}
                 </div>
-                {contestant.rank && (
-                  <div className="text-xs opacity-70">
-                    #{contestant.rank}
-                  </div>
-                )}
               </div>
             ))}
           </div>

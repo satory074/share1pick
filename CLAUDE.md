@@ -15,14 +15,22 @@ npm run build
 # Lint code
 npm run lint
 
-# Start production server
+# Type check only
+npm run typecheck
+
+# Start production server locally
 npm start
 
 # Deploy to production
 vercel --prod
+
+# Set production alias (after deployment)
+vercel alias <deployment-url> share1pick.vercel.app
 ```
 
-**Important**: Turbopack is ONLY used in development mode (`npm run dev`). Production builds use the standard Next.js compiler for stability. Do not add `--turbopack` flag to the build script.
+**Important**:
+- Turbopack is ONLY used in development mode (`npm run dev`). Production builds use the standard Next.js compiler for stability. Do not add `--turbopack` flag to the build script.
+- The development server may use port 3001 if 3000 is already in use.
 
 ## Architecture Overview
 
@@ -38,10 +46,18 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 7. **Social Sharing**: Generates platform-specific text and hashtags through `shareUtils.ts`
 
 ### Key Components
-- `ContestantCard`: Individual contestant display with ranking, nationality, company info. Supports disabled state during selection. Features enhanced placeholder system with smart initials extraction and dynamic gradient backgrounds based on name hash and rank.
-- `ContestantFilter`: Search, sort, and filter contestants by name, company, or nationality
+- `ContestantCard`: Individual contestant display with clean, focused design showing only name and furigana. Supports disabled state during selection. Features enhanced placeholder system with smart initials extraction and dynamic gradient backgrounds based on name hash.
 - `MultiPickShareImage`: Generates collage-style images for multiple selections with responsive grid layout
+- `ShareImagePreview`: Generates single contestant share images (legacy feature, less commonly used)
 - `useSelections`: Custom hook for managing multiple selections in localStorage with legacy migration
+
+### Simplified Data Architecture
+**Important**: The app has been intentionally simplified to focus on core functionality:
+- ❌ No search/filter functionality
+- ❌ No company/agency display
+- ❌ No nationality display
+- ❌ No rank/position display
+- ✅ Clean focus on contestant names only (displayName + optional furigana)
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
@@ -74,11 +90,9 @@ To add a new survival audition show, modify `src/data/shows.ts`:
   contestants: [
     {
       id: 'unique-contestant-id',
-      name: 'Contestant Name',
-      image: '/images/contestants/image.jpg',
-      company: 'Company Name',
-      rank: 1,
-      nationality: 'KR' // Maps to emoji flags
+      displayName: '김채원',
+      furigana: 'Kim Chaewon', // Optional: pronunciation/reading
+      image: '/images/contestants/image.jpg'
     }
   ]
 }
@@ -90,12 +104,12 @@ Also update the hashtag mapping in both `generateHashtags()` and `generateMultiP
 
 The application currently includes comprehensive contestant data for major survival audition shows:
 
-- **PRODUCE 101 (2016)**: 67 contestants including I.O.I members and extensive eliminated contestants through rank 61
+- **PRODUCE 101 (2016)**: 67 contestants including I.O.I members and extensive eliminated contestants
 - **PRODUCE 101 SEASON2 (2017)**: 47 contestants including Wanna One members and JBJ formation members
 - **PRODUCE 48 (2018)**: 55 contestants including IZ*ONE members and AKB48 Group participants
 - **PRODUCE 101 JAPAN (2019)**: Complete JO1 debut lineup (11 members)
 - **PRODUCE 101 JAPAN SEASON2 (2021)**: Complete INI debut lineup (11 members)
-- **PRODUCE 101 JAPAN THE GIRLS (2023)**: Comprehensive dataset with 97 contestants including ME:I debut members (ranks 1-11), finalists (ranks 12-20), and additional contestants through rank 97. Features official images from https://3rd.produce101.jp/ for 87 contestants
+- **PRODUCE 101 JAPAN THE GIRLS (2023)**: Comprehensive dataset with 97 contestants including ME:I debut members, finalists, and additional contestants. Features official images from https://3rd.produce101.jp/ for 87 contestants
 - **Other shows**: Basic debut member data for remaining shows (PRODUCE X 101, Girls Planet 999, Boys Planet, I-LAND, R U Next?, Nizi Project)
 
 Each show includes official website links displayed on both homepage cards and detail pages.
@@ -105,17 +119,16 @@ Each show includes official website links displayed on both homepage cards and d
 The application features a sophisticated placeholder system when contestant images are unavailable:
 
 **Smart Initials Extraction**:
-- For names like "김채원 (Kim Chaewon)", extracts "김K" as initials
-- Handles Korean/English name combinations intelligently
-- Falls back to first character if parsing fails
+- Extracts initials from the contestant's displayName
+- Falls back to first character if extraction fails
 
 **Dynamic Gradient Backgrounds**:
 - 8 different gradient combinations based on name hash for consistency
-- Special rank-based colors: gold gradient for ranks 1-3, purple for ranks 4-11
 - Algorithm: `name.split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0), 0)`
+- Ensures each contestant has a visually distinct and consistent placeholder
 
 **Visual Elements**:
-- Displays initials and rank number in placeholder state
+- Displays initials in placeholder state
 - Maintains visual consistency across the application
 - Seamless fallback when images fail to load
 
@@ -137,7 +150,6 @@ The `shareUtils.ts` provides:
 - **Dynamic hashtags**: Show-specific tags plus common ones (#1pick, #Share1Pick)
 - **Multiple templates**: Random selection from 3 different sharing text formats
 - **Multi-pick support**: `generateMultiPickShareText()` combines hashtags from all selected shows
-- **Nationality mapping**: Converts country codes to emoji flags
 - **Clipboard integration**: Copy sharing text for manual posting
 
 ## Routing Structure
@@ -166,9 +178,8 @@ The `shareUtils.ts` provides:
 - All images should have `loading="lazy"` for performance
 
 **Shared Utilities**:
-- Common functions like `getNationalityFlag()` are in `src/lib/` directory
+- Common utility functions are in `src/lib/` directory
 - Import from shared utilities instead of duplicating code across components
-- Nationality mappings support: KR, JP, CN, TW, HK, US, CA, AU, VN, ID
 
 **User Flow**: The app implements a specific flow where users are automatically redirected to the homepage after making a selection on show detail pages. Do not modify this behavior without user request.
 
@@ -194,7 +205,7 @@ The homepage displays shows in a chronological single-column list format (not gr
 - **No authentication required**: Users can immediately select and share without signing up
 - **Multi-pick functionality**: Users can select one contestant per show and collect them across multiple shows
 - **Client-side storage**: User selections stored in localStorage with automatic legacy migration from single to multi-pick format
-- **Enhanced placeholder system**: When contestant images fail to load, displays smart initials extraction from Korean/English names with dynamic gradient backgrounds. Colors are generated consistently based on name hash, with special gradients for top ranks (gold for top 3, purple for top 11)
+- **Enhanced placeholder system**: When contestant images fail to load, displays initials with dynamic gradient backgrounds. Colors are generated consistently based on name hash for visual distinction
 - **Mobile-first design**: Fully responsive across mobile, tablet, and desktop with single-column chronological layout
 - **Error handling**: Graceful fallbacks for failed image generation and sharing
 - **State management**: Centralized selection logic through `useSelections` hook with type-safe operations
@@ -222,14 +233,12 @@ src/
 │   └── my-picks/          # Multi-pick collection & sharing
 ├── components/            # React components
 │   ├── ContestantCard.tsx # Individual contestant display
-│   ├── ContestantFilter.tsx # Search/filter/sort UI
 │   └── MultiPickShareImage.tsx # Image generation component
 ├── data/
 │   └── shows.ts          # All show & contestant data (single source of truth)
 ├── hooks/
 │   └── useSelections.ts  # localStorage management for user selections
 ├── lib/                  # Shared utilities
-│   ├── nationalityUtils.ts # Nationality flag mappings
 │   └── shareUtils.ts     # Social sharing text generation
 └── types/
     └── index.ts          # TypeScript type definitions
@@ -239,12 +248,16 @@ src/
 
 **Show Interface**: Core `Show` type includes `officialWebsite?: string` field for external website links. Shows are organized chronologically in a single-column list layout on the homepage.
 
-**Contestant Interface**: Each contestant record includes optional `rank`, `company`, and `nationality` fields. Nationality codes map to emoji flags via `getNationalityFlag()` utility.
+**Contestant Interface**: Each contestant record includes:
+- `displayName`: The main display name (e.g., "김채원")
+- `furigana`: Optional pronunciation/reading (e.g., "Kim Chaewon")
+- `image`: Path to contestant image
+- `id`: Unique identifier
 
 **Comprehensive Data**:
 - Major PRODUCE series shows (2016-2018) include extensive contestant rosters beyond just debut members
 - All Japanese PRODUCE series include complete debut group lineups
-- PRODUCE 101 JAPAN THE GIRLS features the most comprehensive dataset with 97 contestants, including ME:I debut members (ranks 1-11), finalists (ranks 12-20), and additional contestants through rank 97. 87 contestants use official images from https://3rd.produce101.jp/
+- PRODUCE 101 JAPAN THE GIRLS features the most comprehensive dataset with 97 contestants including ME:I debut members, finalists, and additional contestants. 87 contestants use official images from https://3rd.produce101.jp/
 - Supports detailed fan exploration of complete show casts beyond just debut members
 
 ## External Image Configuration

@@ -4,7 +4,6 @@ import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useState } from 'react';
-import { getNationalityFlag } from '@/lib/nationalityUtils';
 
 interface ContestantCardProps {
   contestant: Contestant;
@@ -23,30 +22,17 @@ export default function ContestantCard({
 }: ContestantCardProps) {
   const [imageError, setImageError] = useState(false);
 
-  const getRankColor = (rank?: number): string => {
-    if (!rank) return 'text-gray-500';
-    if (rank <= 3) return 'text-yellow-600 font-bold';
-    if (rank <= 10) return 'text-purple-600 font-semibold';
-    return 'text-gray-600';
-  };
-
-  const getInitials = (name: string): string => {
-    // Extract initials from Korean/English name
-    const cleanName = name.replace(/[()]/g, ' ').trim();
-    const parts = cleanName.split(' ');
-
-    if (parts.length >= 2) {
-      // For names like "김채원 (Kim Chaewon)", take first char of each part
-      return parts.slice(0, 2).map(part => part.charAt(0)).join('');
+  const getInitials = (displayName: string): string => {
+    // Extract initials from display name
+    if (displayName.length > 1) {
+      return displayName.slice(0, 2);
     }
-
-    // Fallback to first character
-    return cleanName.charAt(0);
+    return displayName.charAt(0);
   };
 
-  const getGradientColor = (name: string, rank?: number): string => {
+  const getGradientColor = (displayName: string): string => {
     // Generate consistent gradient based on name hash
-    const hash = name.split('').reduce((a, b) => {
+    const hash = displayName.split('').reduce((a, b) => {
       a = ((a << 5) - a) + b.charCodeAt(0);
       return a & a;
     }, 0);
@@ -61,14 +47,6 @@ export default function ContestantCard({
       'from-cyan-400 to-blue-400',
       'from-teal-400 to-green-400'
     ];
-
-    // Special gradients for top ranks
-    if (rank && rank <= 3) {
-      return 'from-yellow-400 to-orange-400';
-    }
-    if (rank && rank <= 11) {
-      return 'from-purple-400 to-pink-400';
-    }
 
     return gradients[Math.abs(hash) % gradients.length];
   };
@@ -93,11 +71,11 @@ export default function ContestantCard({
       `}
     >
       <div className="relative">
-        <div className={`aspect-square mb-3 rounded-xl overflow-hidden bg-gradient-to-br ${getGradientColor(contestant.name, contestant.rank)} flex items-center justify-center relative`}>
+        <div className={`aspect-square mb-3 rounded-xl overflow-hidden bg-gradient-to-br ${getGradientColor(contestant.displayName)} flex items-center justify-center relative`}>
           {!imageError ? (
             <Image
               src={contestant.image}
-              alt={contestant.name}
+              alt={contestant.displayName}
               width={120}
               height={120}
               className="w-full h-full object-cover"
@@ -106,47 +84,20 @@ export default function ContestantCard({
             />
           ) : (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-bold">
-              <span className="text-2xl mb-1">{getInitials(contestant.name)}</span>
-              {contestant.rank && (
-                <span className="text-xs opacity-80">#{contestant.rank}</span>
-              )}
-            </div>
-          )}
-
-          {contestant.rank && contestant.rank <= 3 && (
-            <div className="absolute top-2 right-2 w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-              {contestant.rank}
+              <span className="text-2xl">{getInitials(contestant.displayName)}</span>
             </div>
           )}
         </div>
 
         <div className="text-center">
           <h3 className="font-semibold text-gray-800 dark:text-white text-sm mb-1 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-            {contestant.name}
+            {contestant.displayName}
           </h3>
-
-          {contestant.company && (
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1 truncate">
-              {contestant.company}
+          {contestant.furigana && (
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+              {contestant.furigana}
             </p>
           )}
-
-          <div className="flex items-center justify-center gap-2 text-xs">
-            {contestant.nationality && (
-              <span className="flex items-center gap-1">
-                {getNationalityFlag(contestant.nationality)}
-                <span className="text-gray-500 dark:text-gray-400">
-                  {contestant.nationality}
-                </span>
-              </span>
-            )}
-
-            {contestant.rank && (
-              <span className={`${getRankColor(contestant.rank)}`}>
-                #{contestant.rank}
-              </span>
-            )}
-          </div>
         </div>
 
         {isSelected && (

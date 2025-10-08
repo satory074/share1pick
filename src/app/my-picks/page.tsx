@@ -215,7 +215,7 @@ export default function MyPicksPage() {
                         <div className="w-16 h-16 rounded-full overflow-hidden bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
                           <Image
                             src={contestant.image}
-                            alt={contestant.name}
+                            alt={contestant.displayName}
                             width={64}
                             height={64}
                             className="w-full h-full object-cover"
@@ -225,23 +225,18 @@ export default function MyPicksPage() {
                               target.style.display = 'none';
                               const parent = target.parentElement;
                               if (parent) {
-                                parent.textContent = contestant.name.charAt(0);
+                                parent.textContent = contestant.displayName.charAt(0);
                               }
                             }}
                           />
                         </div>
                         <div className="flex-1">
                           <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                            {contestant.name}
+                            {contestant.displayName}
                           </h4>
-                          {contestant.rank && (
+                          {contestant.furigana && (
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                              最終順位: #{contestant.rank}
-                            </p>
-                          )}
-                          {contestant.company && (
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
-                              {contestant.company}
+                              {contestant.furigana}
                             </p>
                           )}
                         </div>
