@@ -131,48 +131,36 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.02 }}
       className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
     >
-      {hasSelection && (
-        <div className="absolute top-3 right-3 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-semibold z-10">
-          選択済み
-        </div>
-      )}
-      <Link href={`/show/${show.id}`} className="block p-6">
+      <Link href={`/show/${show.id}`} className="block p-5">
         <div className={`flex ${selectedContestant ? 'flex-col md:flex-row gap-4' : 'flex-col'}`}>
           <div className="flex-1">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                {show.title}
-              </h3>
-              <span className="text-sm text-gray-500 dark:text-gray-400">
-                {show.year}年
-              </span>
-            </div>
+            <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+              {show.title}
+            </h3>
 
             {show.debutGroup && (
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                デビューグループ: <span className="font-semibold">{show.debutGroup}</span>
+                デビューグループ: {show.officialWebsite ? (
+                  <span
+                    className="font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 cursor-pointer hover:underline inline-flex items-center gap-1"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(show.officialWebsite, '_blank', 'noopener,noreferrer');
+                    }}
+                  >
+                    {show.debutGroup}
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </span>
+                ) : (
+                  <span className="font-semibold">{show.debutGroup}</span>
+                )}
               </p>
-            )}
-
-            {show.officialWebsite && (
-              <div className="mt-auto">
-                <span
-                  className="inline-flex items-center text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium cursor-pointer"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.open(show.officialWebsite, '_blank', 'noopener,noreferrer');
-                  }}
-                >
-                  🌐 公式サイト
-                  <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </span>
-              </div>
             )}
           </div>
 

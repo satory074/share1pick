@@ -58,8 +58,11 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 - ❌ No show description text on homepage
 - ❌ No contestant count display on homepage
 - ❌ No status badges (completed/ongoing) on homepage
+- ❌ No year display on homepage (removed for minimalism)
+- ❌ No "selected" badges on homepage cards (redundant when contestant is shown)
+- ❌ No standalone official website links (integrated into debut group name)
 - ✅ Clean focus on contestant names only (displayName + optional furigana in Katakana)
-- ✅ Minimal homepage UI: title, year, debut group, official website link, selected contestant only
+- ✅ Ultra-minimal homepage UI: title, clickable debut group name (links to official site), selected contestant only
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
@@ -172,6 +175,7 @@ The `shareUtils.ts` provides:
 - Never nest `<a>` tags (or Next.js `<Link>` components that render as `<a>`)
 - Use `<span>` with `onClick` handlers for nested interactive elements
 - Use `window.open()` for external links inside clickable cards to avoid nesting
+- Example: Homepage debut group names use `<span onClick>` with `window.open()` instead of `<a>` tags to avoid nesting inside `<Link>`
 
 **Image Error Handling**:
 - Use React's declarative approach with `useState` for tracking image errors
@@ -256,12 +260,16 @@ src/
 
 **Show Interface**: Core `Show` type includes `officialWebsite?: string` field for external website links. Shows are organized chronologically in a single-column list layout on the homepage.
 
-**Homepage Display**: The homepage show cards display only essential information:
-- Show title and year
-- Debut group name (if available)
-- Official website link (if available)
+**Homepage Display**: The homepage show cards display only essential information with extreme minimalism:
+- Show title only (no year, no badges, no metadata)
+- Debut group name (if available) - clickable to open official website
+  - When `officialWebsite` is present, clicking the debut group name opens the site in a new tab
+  - Hover effect shows underline and external link icon (↗)
+  - Purple color scheme indicates clickability
 - Selected contestant thumbnail and name (when selected)
-- All non-essential badges and metadata (gender, description, contestant count, status) have been removed for a cleaner, more focused UI
+- Card padding reduced to `p-5` for compact design
+- Hover effect is subtle (`scale: 1.02`) for refined interaction
+- All non-essential elements removed: year, gender badges, description, contestant count, status, "selected" badge
 
 **Contestant Interface**: Each contestant record includes:
 - `displayName`: The main display name (e.g., "김채원", "宮脇咲良")
