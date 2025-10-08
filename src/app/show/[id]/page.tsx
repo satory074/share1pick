@@ -5,7 +5,6 @@ import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
 import ContestantCard from '@/components/ContestantCard';
 import { useSelections } from '@/hooks/useSelections';
 
@@ -18,7 +17,6 @@ export default function ShowPage({ params }: ShowPageProps) {
   const [selectedContestant, setSelectedContestant] = useState<Contestant | null>(null);
   const [isSelecting, setIsSelecting] = useState(false);
   const { addSelection, getSelection } = useSelections();
-  const router = useRouter();
 
   useEffect(() => {
     const show = shows.find(s => s.id === resolvedParams.id);
@@ -55,9 +53,9 @@ export default function ShowPage({ params }: ShowPageProps) {
     setSelectedContestant(contestant);
     addSelection(show.id, contestant.id);
 
-    // Wait a moment to show selection feedback
+    // Re-enable selection after showing feedback
     setTimeout(() => {
-      router.push('/');
+      setIsSelecting(false);
     }, 1000);
   };
 
@@ -123,7 +121,7 @@ export default function ShowPage({ params }: ShowPageProps) {
                 <span className="font-semibold text-purple-600">{selectedContestant.displayName}</span> を選択しました
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                ホームページに戻ります...
+                他の参加者も見るか、上部リンクからホームに戻れます
               </p>
             </div>
           </motion.div>
