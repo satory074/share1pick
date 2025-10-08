@@ -54,7 +54,12 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 - ❌ No company/agency display
 - ❌ No nationality display
 - ❌ No rank/position display
+- ❌ No gender badges on homepage
+- ❌ No show description text on homepage
+- ❌ No contestant count display on homepage
+- ❌ No status badges (completed/ongoing) on homepage
 - ✅ Clean focus on contestant names only (displayName + optional furigana in Katakana)
+- ✅ Minimal homepage UI: title, year, debut group, official website link, selected contestant only
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
@@ -250,6 +255,13 @@ src/
 ## Data Architecture Notes
 
 **Show Interface**: Core `Show` type includes `officialWebsite?: string` field for external website links. Shows are organized chronologically in a single-column list layout on the homepage.
+
+**Homepage Display**: The homepage show cards display only essential information:
+- Show title and year
+- Debut group name (if available)
+- Official website link (if available)
+- Selected contestant thumbnail and name (when selected)
+- All non-essential badges and metadata (gender, description, contestant count, status) have been removed for a cleaner, more focused UI
 
 **Contestant Interface**: Each contestant record includes:
 - `displayName`: The main display name (e.g., "김채원", "宮脇咲良")
