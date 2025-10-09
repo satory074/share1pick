@@ -51,8 +51,11 @@ export default function MyPicksPage() {
         backgroundColor: '#ffffff',
         scale: 2,
         useCORS: true,
-        allowTaint: true,
-        logging: true
+        allowTaint: false,
+        logging: true,
+        onclone: (clonedDoc) => {
+          console.log('Document cloned for rendering');
+        }
       });
 
       console.log('Canvas generated, converting to blob...');
@@ -100,7 +103,7 @@ export default function MyPicksPage() {
           backgroundColor: '#ffffff',
           scale: 2,
           useCORS: true,
-          allowTaint: true
+          allowTaint: false
         });
 
         const link = document.createElement('a');
