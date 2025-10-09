@@ -31,11 +31,12 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
   return (
     <div
       id="multi-pick-share-preview"
-      className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 p-6 text-white relative overflow-hidden"
+      className="p-6 text-white relative overflow-hidden"
       style={{
         width: `${gridConfig.width}px`,
         height: `${gridConfig.height}px`,
-        fontFamily: 'Inter, sans-serif'
+        fontFamily: 'Inter, sans-serif',
+        background: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(236, 72, 153), rgb(251, 146, 60))'
       }}
     >
       <div className="absolute inset-0 bg-black/10"></div>

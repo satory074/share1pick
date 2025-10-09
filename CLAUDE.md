@@ -66,9 +66,16 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 
 ### User Flow Implementation
 The application follows a streamlined flow optimized for mobile-first usage:
-- **Selection Page**: Shows success feedback (✅ + contestant name) and users remain on the page to browse other contestants (no auto-redirect)
-- **Homepage**: Prominent gradient "🎉 シェアする" button with selection count badge. Selected contestants are displayed with images on the right side of show cards (desktop) or below show info (mobile)
+- **Homepage**: Sticky bottom bar with "🎉 シェアする" button (visible when selections exist). Selected contestants are displayed with images on the right side of show cards (desktop) or below show info (mobile)
+- **Selection Page**: Sticky bottom bar shows selected contestant thumbnail, name, and "ホーム" button for easy navigation. Users remain on the page to browse other contestants (no auto-redirect)
 - **Sharing Flow**: Centralized in My Picks page with bulk operations for all selections
+
+### Sticky UI Elements
+The app uses sticky bottom bars for improved mobile UX:
+- **Homepage** (`src/app/page.tsx`): Fixed bottom bar with "🎉 シェアする" button + selection count badge (only visible when selectionCount > 0)
+- **Show Detail Pages** (`src/app/show/[id]/page.tsx`): Fixed bottom bar with selected contestant info (thumbnail 60-64px, displayName, furigana) + "ホーム" button
+- **Design Consistency**: Both use white background (dark mode: gray-800), purple border-top, shadow-lg, z-50, slide-up animation via Framer Motion
+- **Layout Adjustment**: Pages use `pb-28` (bottom padding) to prevent content from being hidden by sticky bars
 
 ### Data Management
 All show and contestant data is statically defined in `src/data/shows.ts`. No external APIs or databases are used. Images are referenced by path but use placeholder fallbacks.
@@ -159,8 +166,8 @@ The `shareUtils.ts` provides:
 
 ## Routing Structure
 
-- `/` - Homepage with chronological show list (single-column layout), selection badges, selected contestant thumbnails on cards, and prominent "🎉 シェアする" button
-- `/show/[id]` - Dynamic show detail pages with contestant selection (users stay on page after selection)
+- `/` - Homepage with chronological show list (single-column layout), selected contestant thumbnails on cards, and sticky bottom "🎉 シェアする" button
+- `/show/[id]` - Dynamic show detail pages with contestant selection and sticky bottom bar showing selected contestant + "ホーム" button
 - `/my-picks` - Multi-pick collection page with centralized sharing functionality
 - Static generation for homepage, dynamic rendering for show and my-picks pages
 
@@ -187,13 +194,14 @@ The `shareUtils.ts` provides:
 - Common utility functions are in `src/lib/` directory
 - Import from shared utilities instead of duplicating code across components
 
-**User Flow**: After selecting a contestant on show detail pages, users remain on the same page to browse other contestants. They can manually return to the homepage using the "← ホームに戻る" link.
+**User Flow**: After selecting a contestant on show detail pages, users remain on the same page to browse other contestants. They can return to the homepage using the "ホーム" button in the sticky bottom bar.
 
 **Component State Management**:
 - `ContestantCard` components become disabled during selection to prevent multiple rapid selections
-- Show detail pages display success feedback for 1 second, then re-enable selection without redirecting
+- Show detail pages re-enable selection after 1 second without redirecting
 - Selection state is managed globally through the `useSelections` hook with localStorage persistence
 - Homepage show cards use a `ShowCard` component that manages image error state independently for each contestant's thumbnail
+- Sticky bars on both homepage and show detail pages use separate image error states for proper fallback handling
 
 ## Deployment Notes
 

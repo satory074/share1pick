@@ -1,0 +1,4 @@
+[debug] [2025-10-08T15:45:46.471Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-08T15:45:46.473Z] > authorizing via signed-in user (satory074@gmail.com)
+[debug] [2025-10-08T15:45:46.475Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-10-08T15:45:46.476Z] > authorizing via signed-in user (satory074@gmail.com)
