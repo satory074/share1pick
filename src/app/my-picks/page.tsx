@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import html2canvas from 'html2canvas';
 import MultiPickShareImage from '@/components/MultiPickShareImage';
 import Image from 'next/image';
-import { generateMultiPickShareText, generateTwitterShareText, copyToClipboard } from '@/lib/shareUtils';
+import { generateMultiPickShareText, generateTwitterShareText, copyToClipboard, encodeShareData } from '@/lib/shareUtils';
 
 export default function MyPicksPage() {
   const { getAllMultiPickData, getSelectionCount, removeSelection, clearAllSelections } = useSelections();
@@ -206,33 +206,55 @@ export default function MyPicksPage() {
   };
 
   const handleConfirmTweet = async () => {
-    if (!generatedImageBlob || !tweetText) return;
+    if (!tweetText) return;
+
+    // 共有URLを生成
+    const shareId = encodeShareData(multiPicks);
+    const shareUrl = `${window.location.origin}/share/${shareId}`;
+    const tweetTextWithUrl = `${tweetText}\n\n${shareUrl}`;
 
     // Web Share API の利用を試みる
     let webShareSuccess = false;
 
     if (typeof navigator.share !== 'undefined' && typeof navigator.canShare !== 'undefined') {
       try {
-        const file = new File([generatedImageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
-          type: 'image/png',
-        });
+        // 画像がある場合はファイル共有を試みる
+        if (generatedImageBlob) {
+          const file = new File([generatedImageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
+            type: 'image/png',
+          });
 
-        const shareData = {
-          text: tweetText,
-          files: [file],
-        };
+          const shareData = {
+            text: tweetText,
+            files: [file],
+          };
 
-        console.log('Checking if can share with files...');
+          console.log('Checking if can share with files...');
 
-        if (navigator.canShare(shareData)) {
-          console.log('Web Share API with files is supported, attempting to share...');
-          await navigator.share(shareData);
-          console.log('Web Share API succeeded');
-          webShareSuccess = true;
-          setShowTweetModal(false);
-          return;
+          if (navigator.canShare(shareData)) {
+            console.log('Web Share API with files is supported, attempting to share...');
+            await navigator.share(shareData);
+            console.log('Web Share API succeeded');
+            webShareSuccess = true;
+            setShowTweetModal(false);
+            return;
+          } else {
+            console.log('Web Share API does not support file sharing');
+          }
         } else {
-          console.log('Web Share API does not support file sharing');
+          // 画像がない場合はURLのみ共有
+          const shareData = {
+            text: tweetTextWithUrl,
+          };
+
+          if (navigator.canShare(shareData)) {
+            console.log('Web Share API with URL is supported, attempting to share...');
+            await navigator.share(shareData);
+            console.log('Web Share API succeeded');
+            webShareSuccess = true;
+            setShowTweetModal(false);
+            return;
+          }
         }
       } catch (error) {
         const err = error as Error;
@@ -247,21 +269,13 @@ export default function MyPicksPage() {
       console.log('Web Share API not available');
     }
 
-    // Web Share API が使えない場合は Twitter Web Intent にフォールバック
+    // Web Share API が使えない場合は Twitter Web Intent にフォールバック（URLを含める）
     if (!webShareSuccess) {
-      console.log('Using Twitter Web Intent fallback');
-      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+      console.log('Using Twitter Web Intent fallback with share URL');
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetTextWithUrl)}`;
       window.open(tweetUrl, '_blank', 'noopener,noreferrer');
 
-      // 画像は別途ダウンロード
-      const link = document.createElement('a');
-      link.download = `my-allstar-1picks-${multiPicks.length}shows.png`;
-      link.href = URL.createObjectURL(generatedImageBlob);
-      link.click();
-      URL.revokeObjectURL(link.href);
-
       setShowTweetModal(false);
-      alert('Xのタブが開きました。ダウンロードした画像を手動で添付してください。');
     }
   };
 

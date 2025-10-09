@@ -158,3 +158,51 @@ export function copyToClipboard(text: string): Promise<boolean> {
     }
   }
 }
+
+// 共有URLのためのデータエンコード/デコード
+export interface ShareData {
+  picks: Array<{
+    showId: string;
+    showTitle: string;
+    contestantId: string;
+    contestantName: string;
+    contestantFurigana?: string;
+  }>;
+}
+
+export function encodeShareData(multiPicks: MultiPickData[]): string {
+  const shareData: ShareData = {
+    picks: multiPicks.map(({ show, contestant }) => ({
+      showId: show.id,
+      showTitle: show.title,
+      contestantId: contestant.id,
+      contestantName: contestant.displayName,
+      contestantFurigana: contestant.furigana,
+    })),
+  };
+
+  // JSONを文字列化してBase64エンコード
+  const jsonString = JSON.stringify(shareData);
+  const base64 = Buffer.from(jsonString).toString('base64');
+  // URL safe にする
+  return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+export function decodeShareData(shareId: string): ShareData | null {
+  try {
+    // URL safe な文字を元に戻す
+    const base64 = shareId.replace(/-/g, '+').replace(/_/g, '/');
+    // パディングを追加
+    const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+    const base64WithPadding = base64 + padding;
+
+    // Base64デコードしてJSONパース
+    const jsonString = Buffer.from(base64WithPadding, 'base64').toString('utf-8');
+    const shareData = JSON.parse(jsonString) as ShareData;
+
+    return shareData;
+  } catch (error) {
+    console.error('Failed to decode share data:', error);
+    return null;
+  }
+}
