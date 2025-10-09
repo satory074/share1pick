@@ -22,19 +22,51 @@ export default function MyPicksPage() {
 
     try {
       const element = document.getElementById('multi-pick-share-preview');
-      if (element) {
-        const canvas = await html2canvas(element, {
-          backgroundColor: '#ffffff',
-          scale: 2
-        });
-
-        return new Promise((resolve) => {
-          canvas.toBlob((blob) => {
-            resolve(blob);
-          }, 'image/png');
-        });
+      if (!element) {
+        console.error('Element with id "multi-pick-share-preview" not found');
+        return null;
       }
-      return null;
+
+      console.log('Found element, waiting for images to load...');
+
+      // 画像の読み込みを待つ
+      const images = element.querySelectorAll('img');
+      await Promise.all(
+        Array.from(images).map(
+          (img) =>
+            new Promise((resolve) => {
+              if (img.complete) {
+                resolve(true);
+              } else {
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(true); // エラーでも続行
+              }
+            })
+        )
+      );
+
+      console.log('All images loaded, generating canvas...');
+
+      const canvas = await html2canvas(element, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: true
+      });
+
+      console.log('Canvas generated, converting to blob...');
+
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            console.log('Blob generated successfully, size:', blob.size);
+          } else {
+            console.error('Failed to generate blob from canvas');
+          }
+          resolve(blob);
+        }, 'image/png');
+      });
     } catch (error) {
       console.error('Failed to generate image blob:', error);
       return null;
@@ -48,9 +80,27 @@ export default function MyPicksPage() {
     try {
       const element = document.getElementById('multi-pick-share-preview');
       if (element) {
+        // 画像の読み込みを待つ
+        const images = element.querySelectorAll('img');
+        await Promise.all(
+          Array.from(images).map(
+            (img) =>
+              new Promise((resolve) => {
+                if (img.complete) {
+                  resolve(true);
+                } else {
+                  img.onload = () => resolve(true);
+                  img.onerror = () => resolve(true);
+                }
+              })
+          )
+        );
+
         const canvas = await html2canvas(element, {
           backgroundColor: '#ffffff',
-          scale: 2
+          scale: 2,
+          useCORS: true,
+          allowTaint: true
         });
 
         const link = document.createElement('a');

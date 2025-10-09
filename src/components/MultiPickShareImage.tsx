@@ -1,7 +1,6 @@
 'use client';
 
 import { MultiPickData } from '@/types';
-import Image from 'next/image';
 
 interface MultiPickShareImageProps {
   multiPicks: MultiPickData[];
@@ -58,11 +57,10 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                 className="bg-white/10 rounded-lg p-3 flex flex-col items-center text-center backdrop-blur-sm"
               >
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 mb-2 bg-white/10 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
-                  <Image
+                  <img
                     src={contestant.image}
                     alt={contestant.displayName}
-                    width={64}
-                    height={64}
+                    crossOrigin="anonymous"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
