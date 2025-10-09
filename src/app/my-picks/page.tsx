@@ -72,6 +72,10 @@ export default function MyPicksPage() {
       });
     } catch (error) {
       console.error('Failed to generate image blob:', error);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
       return null;
     }
   };
@@ -228,7 +232,13 @@ export default function MyPicksPage() {
       }
     } catch (error) {
       console.error('Failed to share to Twitter:', error);
-      alert(`Xへの共有に失敗しました。\nエラー: ${(error as Error).message}`);
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+        alert(`Xへの共有に失敗しました。\nエラー: ${error.message}`);
+      } else {
+        alert('Xへの共有に失敗しました。');
+      }
     } finally {
       setIsGeneratingImage(false);
     }
