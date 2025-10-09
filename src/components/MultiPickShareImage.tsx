@@ -16,6 +16,16 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
     return { cols: 4, rows: 3, width: 1000, height: 800 };
   };
 
+  // 外部画像をプロキシ経由で取得
+  const getProxiedImageUrl = (imageUrl: string) => {
+    // 外部URLの場合はプロキシを使用
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
+    }
+    // ローカル画像はそのまま
+    return imageUrl;
+  };
+
   const gridConfig = getGridConfig(multiPicks.length);
 
   return (
@@ -58,7 +68,7 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
               >
                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 mb-2 bg-white/10 flex items-center justify-center flex-shrink-0 text-white font-bold text-sm">
                   <img
-                    src={contestant.image}
+                    src={getProxiedImageUrl(contestant.image)}
                     alt={contestant.displayName}
                     crossOrigin="anonymous"
                     className="w-full h-full object-cover"
