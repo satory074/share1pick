@@ -156,19 +156,91 @@ The app uses `html2canvas` to convert React components into downloadable PNG ima
 - 7-9 picks: 800x800px (3 columns, 3 rows)
 - 10+ picks: 1000x800px (4 columns, 3 rows)
 
+### Critical html2canvas Compatibility
+
+**IMPORTANT**: `html2canvas` cannot parse modern CSS color functions (OKLCH and oklab) used by Tailwind CSS 4. When styling components that will be rendered with html2canvas:
+
+- ❌ **Never use**: Tailwind opacity modifiers like `bg-white/10`, `bg-black/20`, `opacity-80`
+- ❌ **Never use**: Tailwind gradient utilities like `bg-gradient-to-br from-purple-500`
+- ✅ **Always use**: Explicit RGB/RGBA values in inline styles: `style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}`
+- ✅ **Always use**: Explicit RGB linear-gradients: `style={{ background: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(236, 72, 153))' }}`
+
+**Example** (from `MultiPickShareImage.tsx`):
+```typescript
+// ❌ Bad - will cause "unsupported color function" error
+<div className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400">
+<div className="bg-white/10 opacity-90">
+
+// ✅ Good - compatible with html2canvas
+<div style={{ background: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(236, 72, 153), rgb(251, 146, 60))' }}>
+<div style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', opacity: 0.9 }}>
+```
+
+This limitation applies to all components passed to html2canvas, particularly `MultiPickShareImage`.
+
 ## Share Text Generation
 
 The `shareUtils.ts` provides:
 - **Dynamic hashtags**: Show-specific tags plus common ones (#1pick, #Share1Pick)
+- **Contestant hashtags**: Generated from furigana for Japanese names (removes middle dot), or displayName for Korean/Chinese names
 - **Multiple templates**: Random selection from 3 different sharing text formats
 - **Multi-pick support**: `generateMultiPickShareText()` combines hashtags from all selected shows
+- **Twitter/X optimized**: `generateTwitterShareText()` creates compact text with all contestant and show hashtags
 - **Clipboard integration**: Copy sharing text for manual posting
+
+### Twitter/X Sharing Integration
+
+The My Picks page (`src/app/my-picks/page.tsx`) implements native Twitter/X sharing:
+
+1. **Web Share API First**: Attempts to use native Web Share API with image files (works on mobile)
+2. **Fallback to Twitter Web Intent**: Opens Twitter compose window on desktop with auto-download of image
+3. **Image Generation Flow**:
+   - Generates PNG blob from `MultiPickShareImage` component using html2canvas
+   - Creates File object with proper MIME type
+   - Shares via Web Share API or downloads for manual attachment
+4. **Error Handling**: Detailed console logging for debugging image generation issues
+
+**Key Functions**:
+- `generateShareImageBlob()`: Creates PNG blob from share preview element
+- `handleTwitterShare()`: Orchestrates the entire sharing flow with proper error handling
+- `generateTwitterShareText()`: Creates optimized hashtag text for X/Twitter
+
+## Image Proxy for CORS
+
+External contestant images (e.g., from https://3rd.produce101.jp/) require CORS headers for html2canvas compatibility. The app implements a proxy API route:
+
+**API Route**: `/api/image-proxy/route.ts`
+- Accepts `url` query parameter with the external image URL
+- Fetches the image server-side with custom User-Agent
+- Returns the image with proper CORS headers (`Access-Control-Allow-Origin: *`)
+- Implements aggressive caching (`max-age=31536000, immutable`)
+
+**Usage in Components**:
+```typescript
+// In MultiPickShareImage.tsx
+const getProxiedImageUrl = (imageUrl: string) => {
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return `/api/image-proxy?url=${encodeURIComponent(imageUrl)}`;
+  }
+  return imageUrl; // Local images use direct path
+};
+
+// In img tag
+<img
+  src={getProxiedImageUrl(contestant.image)}
+  crossOrigin="anonymous"
+  // ...
+/>
+```
+
+This proxy is essential for html2canvas to access external images when generating share images.
 
 ## Routing Structure
 
 - `/` - Homepage with chronological show list (single-column layout), selected contestant thumbnails on cards, and sticky bottom "🎉 シェアする" button
 - `/show/[id]` - Dynamic show detail pages with contestant selection and sticky bottom bar showing selected contestant + "ホーム" button
 - `/my-picks` - Multi-pick collection page with centralized sharing functionality
+- `/api/image-proxy` - Server-side proxy for external images with CORS headers
 - Static generation for homepage, dynamic rendering for show and my-picks pages
 
 ## Critical Implementation Notes
@@ -250,7 +322,10 @@ src/
 ├── app/                    # Next.js App Router pages
 │   ├── page.tsx           # Homepage (show list)
 │   ├── show/[id]/         # Dynamic show detail pages
-│   └── my-picks/          # Multi-pick collection & sharing
+│   ├── my-picks/          # Multi-pick collection & sharing
+│   └── api/
+│       └── image-proxy/   # CORS proxy for external images
+│           └── route.ts
 ├── components/            # React components
 │   ├── ContestantCard.tsx # Individual contestant display
 │   └── MultiPickShareImage.tsx # Image generation component
