@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://share1pick.vercel.app'),
   title: "Share1Pick - サバイバルオーディション番組の1pickを選んでシェア",
   description: "PRODUCE、Girls Planet、Boys Planet、I-LANDなどのサバイバルオーディション番組の参加者から1pickを選んでSNSでシェアできるウェブアプリケーション",
   keywords: "PRODUCE 101, Girls Planet, Boys Planet, I-LAND, サバイバルオーディション, 1pick, K-POP, アイドル",

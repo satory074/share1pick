@@ -178,6 +178,109 @@ The app uses `html2canvas` to convert React components into downloadable PNG ima
 
 This limitation applies to all components passed to html2canvas, particularly `MultiPickShareImage`.
 
+## OGP Image Generation for Social Media
+
+The app generates dynamic OGP (Open Graph Protocol) images for share URLs that appear when links are posted on Twitter/X and other social platforms.
+
+### Architecture
+
+**File Location**: `src/app/share/[shareId]/opengraph-image.tsx`
+
+This file uses Next.js 15's file-based metadata convention to automatically generate OGP images. It exports an `ImageResponse` component that renders to PNG at 1200x630px.
+
+### Critical Satori Layout Requirements
+
+The `ImageResponse` API uses Satori library for rendering JSX to images. Satori has **strict layout requirements** that will cause errors if not followed:
+
+**❌ Will Cause Errors**:
+```typescript
+// Text as direct child
+<div style={{ fontSize: 20 }}>
+  MY ALL-STAR 1PICKS
+</div>
+
+// Missing display: flex with multiple children
+<div>
+  <div>Child 1</div>
+  <div>Child 2</div>
+</div>
+```
+
+**✅ Correct Implementation**:
+```typescript
+// Text wrapped in element
+<div style={{ display: 'flex', fontSize: 20 }}>
+  <span>MY ALL-STAR 1PICKS</span>
+</div>
+
+// Explicit display: flex for multiple children
+<div style={{ display: 'flex', flexDirection: 'column' }}>
+  <div>Child 1</div>
+  <div>Child 2</div>
+</div>
+```
+
+**Key Rules**:
+1. All `<div>` elements with multiple children MUST have explicit `display: 'flex'` or `display: 'none'`
+2. All text content MUST be wrapped in elements like `<span>` - cannot be direct children of divs
+3. Only flexbox layout is supported (no CSS grid, no absolute positioning)
+4. All styles must be inline (no className or external stylesheets)
+
+### Metadata Configuration
+
+**`src/app/layout.tsx`**:
+```typescript
+export const metadata: Metadata = {
+  metadataBase: new URL('https://share1pick.vercel.app'),
+  // ... other metadata
+};
+```
+
+The `metadataBase` is **required** for OGP images to work on social platforms. Without it, Next.js generates relative URLs which social media crawlers cannot access.
+
+**`src/app/share/[shareId]/page.tsx`**:
+```typescript
+// Server component with generateMetadata
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const shareData = decodeShareData(shareId);
+  return {
+    title: '...',
+    openGraph: {
+      images: [{
+        url: `/share/${shareId}/opengraph-image`,
+        width: 1200,
+        height: 630,
+      }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images: [`/share/${shareId}/opengraph-image`],
+    },
+  };
+}
+
+// Returns client component for UI
+export default async function SharePage({ params }: PageProps) {
+  const resolvedParams = await params;
+  return <SharePageClient shareId={resolvedParams.shareId} />;
+}
+```
+
+**Important**: `generateMetadata` cannot be exported from `'use client'` components. The pattern is:
+1. Share page is a **server component** that exports `generateMetadata`
+2. UI logic is separated into `SharePageClient.tsx` (client component)
+3. Server component unwraps params and passes shareId to client component
+
+This separation ensures OGP metadata is generated server-side while maintaining client-side interactivity.
+
+### Debugging OGP Images
+
+To test OGP image generation:
+1. Navigate directly to the image URL: `/share/[shareId]/opengraph-image`
+2. Check for Satori errors in server logs (missing `display: flex`, unwrapped text)
+3. Use Twitter Card Validator to check how Twitter sees the metadata
+4. Verify `metadataBase` is set in layout.tsx
+
 ## Share Text Generation
 
 The `shareUtils.ts` provides:

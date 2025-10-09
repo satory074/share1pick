@@ -34,7 +34,7 @@ export default async function Image({ params }: Props) {
             fontWeight: 'bold',
           }}
         >
-          無効な共有リンクです
+          <div style={{ display: 'flex' }}>無効な共有リンクです</div>
         </div>
       ),
       {
@@ -66,14 +66,14 @@ export default async function Image({ params }: Props) {
             marginBottom: '40px',
           }}
         >
-          <div style={{ fontSize: 20, marginBottom: '16px', opacity: 0.9 }}>
-            MY ALL-STAR 1PICKS
+          <div style={{ display: 'flex', fontSize: 20, marginBottom: '16px', opacity: 0.9 }}>
+            <span>MY ALL-STAR 1PICKS</span>
           </div>
-          <div style={{ fontSize: 48, fontWeight: 'bold', marginBottom: '16px' }}>
-            {shareData.picks.length}つの番組から選んだ推しメン
+          <div style={{ display: 'flex', fontSize: 48, fontWeight: 'bold', marginBottom: '16px' }}>
+            <span>{shareData.picks.length}つの番組から選んだ推しメン</span>
           </div>
-          <div style={{ fontSize: 24, opacity: 0.9 }}>
-            サバイバルオーディション 1pick コレクション
+          <div style={{ display: 'flex', fontSize: 24, opacity: 0.9 }}>
+            <span>サバイバルオーディション 1pick コレクション</span>
           </div>
         </div>
 
@@ -114,7 +114,7 @@ export default async function Image({ params }: Props) {
                   fontWeight: 'bold',
                 }}
               >
-                {pick.contestantName.charAt(0)}
+                <span>{pick.contestantName.charAt(0)}</span>
               </div>
               <div
                 style={{
@@ -123,11 +123,11 @@ export default async function Image({ params }: Props) {
                   gap: '8px',
                 }}
               >
-                <div style={{ fontSize: '32px', fontWeight: 'bold' }}>
-                  {pick.contestantName}
+                <div style={{ display: 'flex', fontSize: '32px', fontWeight: 'bold' }}>
+                  <span>{pick.contestantName}</span>
                 </div>
-                <div style={{ fontSize: '20px', opacity: 0.8 }}>
-                  {pick.showTitle}
+                <div style={{ display: 'flex', fontSize: '20px', opacity: 0.8 }}>
+                  <span>{pick.showTitle}</span>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ export default async function Image({ params }: Props) {
                 opacity: 0.8,
               }}
             >
-              他 {shareData.picks.length - 4}名
+              <span>他 {shareData.picks.length - 4}名</span>
             </div>
           )}
         </div>
@@ -160,14 +160,14 @@ export default async function Image({ params }: Props) {
             gap: '8px',
           }}
         >
-          <div style={{ fontSize: 18, opacity: 0.8 }}>
-            Created with
+          <div style={{ display: 'flex', fontSize: 18, opacity: 0.8 }}>
+            <span>Created with</span>
           </div>
-          <div style={{ fontSize: 36, fontWeight: 'bold' }}>
-            Share1Pick
+          <div style={{ display: 'flex', fontSize: 36, fontWeight: 'bold' }}>
+            <span>Share1Pick</span>
           </div>
-          <div style={{ fontSize: 18, opacity: 0.7 }}>
-            share1pick.vercel.app
+          <div style={{ display: 'flex', fontSize: 18, opacity: 0.7 }}>
+            <span>share1pick.vercel.app</span>
           </div>
         </div>
       </div>
