@@ -80,6 +80,8 @@ The app uses sticky bottom bars for improved mobile UX:
 ### Data Management
 All show and contestant data is statically defined in `src/data/shows.ts`. No external APIs or databases are used. Images are referenced by path but use placeholder fallbacks.
 
+**Contestant Display Order**: On show detail pages (`src/app/show/[id]/page.tsx`), contestants are automatically sorted by their `furigana` field (or `displayName` if furigana is not available) using Japanese locale sorting (`localeCompare('ja')`). This ensures contestants appear in proper dictionary order (ア行 → カ行 → サ行 → ...).
+
 **Selection Storage**: The app uses localStorage to persist user selections across sessions:
 - `allSelections`: Object mapping showId to UserSelection for multi-pick functionality
 - `lastSelection`: Legacy single selection (automatically migrated to allSelections)

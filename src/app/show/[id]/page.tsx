@@ -136,16 +136,22 @@ export default function ShowPage({ params }: ShowPageProps) {
           </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {show.contestants.map((contestant, index) => (
-              <ContestantCard
-                key={contestant.id}
-                contestant={contestant}
-                isSelected={selectedContestant?.id === contestant.id}
-                onClick={() => handleContestantSelect(contestant)}
-                index={index}
-                disabled={isSelecting}
-              />
-            ))}
+            {[...show.contestants]
+              .sort((a, b) => {
+                const aKey = a.furigana || a.displayName;
+                const bKey = b.furigana || b.displayName;
+                return aKey.localeCompare(bKey, 'ja');
+              })
+              .map((contestant, index) => (
+                <ContestantCard
+                  key={contestant.id}
+                  contestant={contestant}
+                  isSelected={selectedContestant?.id === contestant.id}
+                  onClick={() => handleContestantSelect(contestant)}
+                  index={index}
+                  disabled={isSelecting}
+                />
+              ))}
           </div>
         </motion.div>
       </div>
