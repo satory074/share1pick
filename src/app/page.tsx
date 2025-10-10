@@ -138,11 +138,11 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
-      className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative"
+      className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative ${selectedContestant ? 'min-h-[200px]' : ''}`}
     >
-      <Link href={`/show/${show.id}`} className="block p-5">
-        <div className={`flex ${selectedContestant ? 'flex-col md:flex-row gap-4' : 'flex-col'}`}>
-          <div className="flex-1">
+      <Link href={`/show/${show.id}`} className="block h-full">
+        <div className={`flex h-full ${selectedContestant ? 'flex-col md:flex-row' : 'flex-col p-5'}`}>
+          <div className={`flex-1 ${selectedContestant ? 'p-5' : ''}`}>
             {show.logo && !logoError && (
               <div className="mb-3">
                 <Image
@@ -184,30 +184,32 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
           </div>
 
           {selectedContestant && (
-            <div className="flex md:flex-col items-center md:items-center gap-3 md:w-32">
-              <div className={`w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden bg-gradient-to-br ${getGradientColor(selectedContestant.displayName)} flex items-center justify-center relative flex-shrink-0`}>
+            <div className="relative w-full h-56 md:w-48 md:h-auto">
+              <div className={`absolute inset-0 bg-gradient-to-br ${getGradientColor(selectedContestant.displayName)} flex items-center justify-center`}>
                 {!imageError ? (
                   <Image
                     src={selectedContestant.image}
                     alt={selectedContestant.displayName}
-                    width={96}
-                    height={96}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                     loading="lazy"
                     onError={() => setImageError(true)}
                   />
                 ) : (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white font-bold">
-                    <span className="text-xl">{getInitials(selectedContestant.displayName)}</span>
+                  <div className="text-white font-bold">
+                    <span className="text-4xl">{getInitials(selectedContestant.displayName)}</span>
                   </div>
                 )}
               </div>
-              <div className="text-left md:text-center flex-1 md:flex-none">
-                <p className="font-semibold text-gray-800 dark:text-white text-sm line-clamp-2">
+              {/* Gradient overlay */}
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+              {/* Name and furigana */}
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white z-10">
+                <p className="font-bold text-sm leading-tight line-clamp-2">
                   {selectedContestant.displayName}
                 </p>
                 {selectedContestant.furigana && (
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                  <p className="text-xs opacity-90 mt-0.5 truncate">
                     {selectedContestant.furigana}
                   </p>
                 )}
