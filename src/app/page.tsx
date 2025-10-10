@@ -130,6 +130,7 @@ interface ShowCardProps {
 
 function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, getGradientColor }: ShowCardProps) {
   const [imageError, setImageError] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   return (
     <motion.div
@@ -142,6 +143,19 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
       <Link href={`/show/${show.id}`} className="block p-5">
         <div className={`flex ${selectedContestant ? 'flex-col md:flex-row gap-4' : 'flex-col'}`}>
           <div className="flex-1">
+            {show.logo && !logoError && (
+              <div className="mb-3">
+                <Image
+                  src={show.logo}
+                  alt={`${show.title} Logo`}
+                  width={200}
+                  height={48}
+                  className="h-12 w-auto"
+                  loading="lazy"
+                  onError={() => setLogoError(true)}
+                />
+              </div>
+            )}
             <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
               {show.title}
             </h3>

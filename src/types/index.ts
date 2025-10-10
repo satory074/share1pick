@@ -11,6 +11,7 @@ export interface Show {
   year: number;
   debutGroup?: string;
   officialWebsite?: string;
+  logo?: string;
   contestants: Contestant[];
 }
 

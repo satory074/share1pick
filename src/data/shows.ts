@@ -262,6 +262,7 @@ export const shows: Show[] = [
     year: 2023,
     debutGroup: 'ME:I',
     officialWebsite: 'https://produce101.jp/',
+    logo: '/images/logos/produce101-japan-girls.svg',
     contestants: [
       // ME:I デビューメンバー (1-11位)
       { id: 'kasahara-momona', displayName: '笠原桃奈', furigana: 'カサハラ・モモナ', image: 'https://3rd.produce101.jp/static/produce101s3/profile/Fv4BWpHPcDWMaUvvNw/profile/022_kasaharamomona.jpg' },
