@@ -62,7 +62,13 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 **Layout**:
 - Homepage displays shows in chronological single-column list (sorted by year)
 - Show cards display optional logo above title (48px height, auto width, SVG recommended)
-- Selected contestant display: Desktop uses 2-column layout (show info left, contestant image 80-96px right); Mobile shows contestant below show info
+- Selected contestant display:
+  - **Desktop**: Left-right split layout with show info on left (flex-1) and full-height contestant image on right (192px width)
+  - **Mobile**: Stacked layout with show info on top and larger contestant image below (224px height)
+  - Card minimum height: 200px when contestant is selected
+  - Image uses `object-cover` to fill entire height
+  - **Hover effect** (desktop only): Contestant name and furigana appear on image hover with gradient overlay (300ms fade transition)
+  - **Mobile**: Name and furigana always visible with gradient overlay
 - Show detail pages: Contestants automatically sorted by `furigana` (or `displayName`) using Japanese locale sorting (`localeCompare('ja')`)
 
 ### Data Management
@@ -229,6 +235,14 @@ When adding images from new external sources, update the `remotePatterns` array.
 
 ### User Flow After Selection
 After selecting a contestant on show detail pages, users remain on the same page to browse other contestants. They return to homepage using the "ホーム" button in the sticky bottom bar.
+
+### Hover Effects
+Homepage contestant cards use Tailwind's `group` utility for hover detection:
+- Add `group` class to the container element
+- Child elements use `md:opacity-0 md:group-hover:opacity-100` for desktop-only hover reveals
+- Mobile uses `opacity-100` to always show content (touch devices don't have hover)
+- Smooth transitions with `transition-opacity duration-300`
+- Example: Contestant name overlay fades in on image hover (desktop), always visible on mobile
 
 ## Deployment
 

@@ -184,7 +184,7 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
           </div>
 
           {selectedContestant && (
-            <div className="relative w-full h-56 md:w-48 md:h-auto">
+            <div className="relative w-full h-56 md:w-48 md:h-auto group">
               <div className={`absolute inset-0 bg-gradient-to-br ${getGradientColor(selectedContestant.displayName)} flex items-center justify-center`}>
                 {!imageError ? (
                   <Image
@@ -202,9 +202,9 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
                 )}
               </div>
               {/* Gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
               {/* Name and furigana */}
-              <div className="absolute inset-x-0 bottom-0 p-3 text-white z-10">
+              <div className="absolute inset-x-0 bottom-0 p-3 text-white z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
                 <p className="font-bold text-sm leading-tight line-clamp-2">
                   {selectedContestant.displayName}
                 </p>
