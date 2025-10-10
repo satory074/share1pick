@@ -61,6 +61,7 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 
 **Layout**:
 - Homepage displays shows in chronological single-column list (sorted by year)
+- Show cards display optional logo above title (48px height, auto width, SVG recommended)
 - Selected contestant display: Desktop uses 2-column layout (show info left, contestant image 80-96px right); Mobile shows contestant below show info
 - Show detail pages: Contestants automatically sorted by `furigana` (or `displayName`) using Japanese locale sorting (`localeCompare('ja')`)
 
@@ -84,6 +85,7 @@ All show and contestant data is statically defined in `src/data/shows.ts`. No ex
   year: number;  // Used for chronological sorting
   debutGroup?: string;
   officialWebsite?: string;
+  logo?: string;  // Path to show logo (SVG recommended, displayed on homepage)
   contestants: Contestant[];
 }
 
@@ -112,6 +114,7 @@ To add a new show, modify `src/data/shows.ts`:
   year: 2024,
   debutGroup: 'Final Group Name',
   officialWebsite: 'https://official-site.com/',
+  logo: '/images/logos/show-logo.svg',  // Optional: Show logo (SVG recommended)
   contestants: [
     {
       id: 'unique-contestant-id',
@@ -124,6 +127,12 @@ To add a new show, modify `src/data/shows.ts`:
 ```
 
 Also update hashtag mapping in `generateHashtags()` and `generateMultiPickShareText()` in `src/lib/shareUtils.ts`.
+
+**Adding Show Logos**:
+1. Download official logo from show's website (SVG format preferred)
+2. Save to `public/images/logos/` directory
+3. Add `logo` field to show data pointing to the saved file
+4. Logo displayed above show title on homepage (height: 48px, auto width)
 
 ## Critical Technical Constraints
 
