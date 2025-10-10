@@ -9,10 +9,6 @@ export interface Show {
   id: string;
   title: string;
   year: number;
-  type: 'male' | 'female' | 'mixed';
-  status: 'completed' | 'ongoing' | 'upcoming';
-  logo?: string;
-  description?: string;
   debutGroup?: string;
   officialWebsite?: string;
   contestants: Contestant[];

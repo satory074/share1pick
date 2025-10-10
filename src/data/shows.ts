@@ -5,10 +5,7 @@ export const shows: Show[] = [
     id: 'produce101',
     title: 'PRODUCE 101',
     year: 2016,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'I.O.I',
-    description: 'サバイバルオーディション番組の原点',
     officialWebsite: 'https://www.mnet.com/',
     contestants: [
       // I.O.I デビューメンバー (1-11位)
@@ -82,10 +79,7 @@ export const shows: Show[] = [
     id: 'produce101-s2',
     title: 'PRODUCE 101 SEASON2',
     year: 2017,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'Wanna One',
-    description: '101人の練習生から11人を選ぶ男性版',
     officialWebsite: 'https://www.mnet.com/',
     contestants: [
       // Wanna One デビューメンバー (1-11位)
@@ -145,10 +139,7 @@ export const shows: Show[] = [
     id: 'produce48',
     title: 'PRODUCE 48',
     year: 2018,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'IZ*ONE',
-    description: '日韓合同プロジェクト',
     officialWebsite: 'https://www.mnet.com/',
     contestants: [
       // IZ*ONE デビューメンバー (1-12位)
@@ -217,10 +208,7 @@ export const shows: Show[] = [
     id: 'produce-x-101',
     title: 'PRODUCE X 101',
     year: 2019,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'X1',
-    description: '101人から11人を選ぶ第4シーズン',
     officialWebsite: 'https://www.mnet.com/',
     contestants: [
       { id: 'kim-yohan', displayName: '김요한', furigana: 'キム・ヨハン', image: '/images/contestants/kim-yohan.jpg' },
@@ -232,10 +220,7 @@ export const shows: Show[] = [
     id: 'produce101-japan',
     title: 'PRODUCE 101 JAPAN',
     year: 2019,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'JO1',
-    description: '日本版PRODUCE 101',
     officialWebsite: 'https://produce101.jp/',
     contestants: [
       { id: 'mamehara-issei', displayName: '豆原一成', furigana: 'マメハラ・イッセイ', image: '/images/contestants/mamehara-issei.jpg' },
@@ -255,10 +240,7 @@ export const shows: Show[] = [
     id: 'produce101-japan-s2',
     title: 'PRODUCE 101 JAPAN SEASON2',
     year: 2021,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'INI',
-    description: '日本版PRODUCE 101第2シーズン',
     officialWebsite: 'https://produce101.jp/',
     contestants: [
       { id: 'kimura-masaya', displayName: '木村柾哉', furigana: 'キムラ・マサヤ', image: '/images/contestants/kimura-masaya.jpg' },
@@ -278,10 +260,7 @@ export const shows: Show[] = [
     id: 'produce101-japan-girls',
     title: 'PRODUCE 101 JAPAN THE GIRLS',
     year: 2023,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'ME:I',
-    description: '日本版初のガールズグループ誕生プロジェクト',
     officialWebsite: 'https://produce101.jp/',
     contestants: [
       // ME:I デビューメンバー (1-11位)
@@ -390,10 +369,7 @@ export const shows: Show[] = [
     id: 'girls-planet-999',
     title: 'Girls Planet 999',
     year: 2021,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'Kep1er',
-    description: '日韓中合同ガールズグループプロジェクト',
     officialWebsite: 'https://www.mnet.com/',
     contestants: [
       { id: 'kim-chaehyun', displayName: '김채현', furigana: 'キム・チェヒョン', image: '/images/contestants/kim-chaehyun.jpg' },
@@ -405,10 +381,7 @@ export const shows: Show[] = [
     id: 'boys-planet',
     title: 'Boys Planet',
     year: 2023,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'ZEROBASEONE',
-    description: 'グローバル男性アイドル誕生プロジェクト',
     officialWebsite: 'https://service.mnetplus.world/boysplanet/en/home',
     contestants: [
       { id: 'kim-jiwoong', displayName: '김지웅', furigana: 'キム・ジウン', image: '/images/contestants/kim-jiwoong.jpg' },
@@ -429,10 +402,7 @@ export const shows: Show[] = [
     id: 'i-land',
     title: 'I-LAND',
     year: 2020,
-    type: 'male',
-    status: 'completed',
     debutGroup: 'ENHYPEN',
-    description: 'HYBEが手掛ける新世代アイドル誕生プロジェクト',
     officialWebsite: 'https://cjenm.com/en/featured-contents/iland/',
     contestants: [
       { id: 'yang-jungwon', displayName: '양정원', furigana: 'ヤン・ジョンウォン', image: '/images/contestants/yang-jungwon.jpg' },
@@ -451,10 +421,7 @@ export const shows: Show[] = [
     id: 'r-u-next',
     title: 'R U Next?',
     year: 2023,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'ILLIT',
-    description: 'HYBE初のガールズグループ誕生プロジェクト',
     officialWebsite: 'https://www.youtube.com/@HYBELABELS',
     contestants: [
       { id: 'yunah', displayName: '윤아', furigana: 'ユナ', image: '/images/contestants/yunah.jpg' },
@@ -466,10 +433,7 @@ export const shows: Show[] = [
     id: 'nizi-project',
     title: 'Nizi Project',
     year: 2020,
-    type: 'female',
-    status: 'completed',
     debutGroup: 'NiziU',
-    description: 'JYPとソニーミュージックによる日本のガールズグループプロジェクト',
     officialWebsite: 'https://www.jyp.com/',
     contestants: [
       { id: 'mako', displayName: '真子', furigana: 'マコ', image: '/images/contestants/mako.jpg' },
