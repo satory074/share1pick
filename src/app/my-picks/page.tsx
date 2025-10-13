@@ -280,7 +280,7 @@ export default function MyPicksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
+    <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -289,7 +289,7 @@ export default function MyPicksPage() {
         >
           <Link
             href="/"
-            className="inline-flex items-center text-purple-600 hover:text-purple-800 mb-4"
+            className="inline-flex items-center text-mint-600 hover:text-mint-500 mb-4"
           >
             ← ホームに戻る
           </Link>
@@ -311,7 +311,7 @@ export default function MyPicksPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-12"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 max-w-md mx-auto">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl p-8 max-w-md mx-auto">
               <div className="text-6xl mb-4">🎤</div>
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 1pickを選んでみよう！
@@ -321,7 +321,7 @@ export default function MyPicksPage() {
               </p>
               <Link
                 href="/"
-                className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                className="inline-block bg-mint-600 hover:bg-mint-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 番組を見る
               </Link>
@@ -364,14 +364,14 @@ export default function MyPicksPage() {
                     <button
                       onClick={generateShareImage}
                       disabled={isGeneratingImage}
-                      className="w-full bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="w-full bg-mint-600 hover:bg-mint-500 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg"
                     >
                       {isGeneratingImage ? '画像を生成中...' : '画像をダウンロード'}
                     </button>
 
                     <button
                       onClick={handleCopyShareText}
-                      className="w-full bg-pink-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-700 transition-colors"
+                      className="w-full bg-coral-600 hover:bg-coral-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                     >
                       シェアテキストをコピー
                     </button>
@@ -409,7 +409,7 @@ export default function MyPicksPage() {
                     key={`${show.id}-${contestant.id}`}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden"
+                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300"
                   >
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-4">
@@ -464,7 +464,7 @@ export default function MyPicksPage() {
                       <div className="mt-4">
                         <Link
                           href={`/show/${show.id}`}
-                          className="text-purple-600 hover:text-purple-800 text-sm underline"
+                          className="text-mint-600 hover:text-mint-500 text-sm underline"
                         >
                           番組詳細を見る
                         </Link>
@@ -483,7 +483,7 @@ export default function MyPicksPage() {
             >
               <Link
                 href="/"
-                className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+                className="inline-block bg-mint-600 hover:bg-mint-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 他の番組も見る
               </Link>
@@ -571,7 +571,7 @@ export default function MyPicksPage() {
                       return (
                         <span
                           key={contestant.id}
-                          className="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-medium"
+                          className="inline-block px-3 py-1 bg-mint-500/10 dark:bg-mint-500/20 text-mint-600 dark:text-mint-400 rounded-full text-sm font-medium"
                         >
                           {hashtag}
                         </span>
@@ -589,7 +589,7 @@ export default function MyPicksPage() {
                     {['#1pick', '#Share1Pick'].map((tag) => (
                       <span
                         key={tag}
-                        className="inline-block px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300 rounded-full text-sm font-medium"
+                        className="inline-block px-3 py-1 bg-coral-600/10 dark:bg-coral-600/20 text-coral-600 dark:text-coral-400 rounded-full text-sm font-medium"
                       >
                         {tag}
                       </span>

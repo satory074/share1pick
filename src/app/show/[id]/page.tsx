@@ -69,12 +69,12 @@ export default function ShowPage({ params }: ShowPageProps) {
 
   if (!show) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
             番組が見つかりません
           </h1>
-          <Link href="/" className="text-purple-600 hover:text-purple-800 underline">
+          <Link href="/" className="text-mint-600 hover:text-mint-500 underline">
             ホームに戻る
           </Link>
         </div>
@@ -96,7 +96,7 @@ export default function ShowPage({ params }: ShowPageProps) {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
+    <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface">
       <div className="container mx-auto px-4 py-8 pb-28">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -111,7 +111,7 @@ export default function ShowPage({ params }: ShowPageProps) {
             <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
               デビューグループ: {show.officialWebsite ? (
                 <span
-                  className="font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 cursor-pointer hover:underline inline-flex items-center gap-1"
+                  className="font-semibold text-mint-600 hover:text-mint-500 dark:text-mint-400 dark:hover:text-mint-300 cursor-pointer hover:underline inline-flex items-center gap-1"
                   onClick={() => window.open(show.officialWebsite, '_blank', 'noopener,noreferrer')}
                 >
                   {show.debutGroup}
@@ -162,7 +162,7 @@ export default function ShowPage({ params }: ShowPageProps) {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t-2 border-purple-200 dark:border-purple-700 z-50"
+          className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl border-t-2 border-mint-300/40 dark:border-mint-500/30 z-50"
         >
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between gap-4">
@@ -203,7 +203,7 @@ export default function ShowPage({ params }: ShowPageProps) {
               {/* Home Button */}
               <Link
                 href="/"
-                className="flex-shrink-0 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-semibold text-sm md:text-base transition-colors shadow-md hover:shadow-lg"
+                className="flex-shrink-0 bg-mint-600 hover:bg-mint-500 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 ホーム
               </Link>

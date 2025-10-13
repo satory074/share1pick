@@ -71,6 +71,28 @@ This is a Next.js 15 application using App Router for a survival audition show 1
   - **Mobile**: Name and furigana always visible with gradient overlay
 - Show detail pages: Contestants automatically sorted by `furigana` (or `displayName`) using Japanese locale sorting (`localeCompare('ja')`)
 
+### Design System
+**Color Palette** (Mint + Coral):
+- **Primary (Mint)**: #5DD9B9 (`mint-600`) - Fresh, modern feel for primary actions and links
+- **Secondary (Coral)**: #FF8A80 (`coral-600`) - Warm, energetic accent for secondary actions
+- **Accent Colors**: Gold (#FFD54F) and Blue (#6EC5FF) for additional highlights
+- **Background**:
+  - Light mode: Mint-50 (#F0FFFC) to Warm cream (#FFFBF0) gradient
+  - Dark mode: Dark teal (#0f1f1c) to Dark surface (#1a2d29) gradient
+- **Text**: Dark teal (#2D5F56) for emphasized text
+
+**Button Design Philosophy**:
+- Use **solid colors only** - no gradients (user preference for clean, simple aesthetic)
+- Primary actions: `bg-mint-600 hover:bg-mint-500`
+- Secondary actions: `bg-coral-600 hover:bg-coral-500`
+- Example: "シェアする" button uses solid mint, "コピー" button uses solid coral
+
+**CSS Custom Properties**:
+- All colors defined in `src/app/globals.css` as CSS variables
+- Available as Tailwind utilities throughout the app (e.g., `bg-mint-600`, `text-coral-600`)
+- Mint scale: 50, 100, 300, 400, 500, 600
+- Coral scale: 400, 500, 600
+
 ### Data Management
 All show and contestant data is statically defined in `src/data/shows.ts`. No external APIs or databases. Images use placeholder fallbacks with gradient backgrounds and initials.
 

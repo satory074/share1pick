@@ -3,6 +3,33 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Mint - Primary Colors */
+  --mint-600: #5DD9B9;
+  --mint-500: #7FE4CC;
+  --mint-400: #A1FFCE;
+  --mint-300: #B8FFD9;
+  --mint-100: #E8FFF8;
+  --mint-50: #F0FFFC;
+
+  /* Coral - Secondary Colors */
+  --coral-600: #FF8A80;
+  --coral-500: #FF9B93;
+  --coral-400: #FFACA5;
+
+  /* Accent Colors */
+  --gold-500: #FFD54F;
+  --blue-400: #6EC5FF;
+
+  /* Background */
+  --bg-warm: #FFFBF0;
+
+  /* Text */
+  --text-dark: #2D5F56;
+
+  /* Dark Mode */
+  --dark-bg: #0f1f1c;
+  --dark-surface: #1a2d29;
 }
 
 @theme inline {
@@ -10,6 +37,33 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Custom Mint Colors */
+  --color-mint-600: var(--mint-600);
+  --color-mint-500: var(--mint-500);
+  --color-mint-400: var(--mint-400);
+  --color-mint-300: var(--mint-300);
+  --color-mint-100: var(--mint-100);
+  --color-mint-50: var(--mint-50);
+
+  /* Custom Coral Colors */
+  --color-coral-600: var(--coral-600);
+  --color-coral-500: var(--coral-500);
+  --color-coral-400: var(--coral-400);
+
+  /* Custom Accent Colors */
+  --color-gold-500: var(--gold-500);
+  --color-blue-400: var(--blue-400);
+
+  /* Custom Background */
+  --color-bg-warm: var(--bg-warm);
+
+  /* Custom Text */
+  --color-text-dark: var(--text-dark);
+
+  /* Dark Mode Surfaces */
+  --color-dark-bg: var(--dark-bg);
+  --color-dark-surface: var(--dark-surface);
 }
 
 @media (prefers-color-scheme: dark) {

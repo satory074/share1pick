@@ -42,7 +42,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
+    <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface">
       <div className="container mx-auto px-4 py-12 pb-28">
         <header className="text-center mb-12">
           <motion.h1
@@ -98,16 +98,16 @@ export default function Home() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
-          className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg border-t-2 border-purple-200 dark:border-purple-700 z-50"
+          className="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl border-t-2 border-mint-300/40 dark:border-mint-500/30 z-50"
         >
           <div className="container mx-auto px-4 py-3">
             <div className="flex justify-center">
               <Link
                 href="/my-picks"
-                className="inline-flex items-center bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 md:px-10 md:py-4 rounded-xl font-bold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 text-base md:text-lg"
+                className="inline-flex items-center bg-mint-600 text-white px-8 py-3 md:px-10 md:py-4 rounded-xl font-bold hover:bg-mint-500 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 text-base md:text-lg"
               >
                 🎉 シェアする
-                <span className="ml-3 bg-white text-purple-600 px-3 py-1.5 rounded-full text-sm font-bold">
+                <span className="ml-3 bg-white text-mint-600 px-3 py-1.5 rounded-full text-sm font-bold">
                   {selectionCount}件
                 </span>
               </Link>
@@ -138,11 +138,11 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
       whileHover={{ scale: 1.02 }}
-      className={`bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 relative ${selectedContestant ? 'min-h-[200px]' : ''}`}
+      className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative min-h-[200px]"
     >
       <Link href={`/show/${show.id}`} className="block h-full">
-        <div className={`flex h-full ${selectedContestant ? 'flex-col md:flex-row' : 'flex-col p-5'}`}>
-          <div className={`flex-1 ${selectedContestant ? 'p-5' : ''}`}>
+        <div className="flex h-full flex-col md:flex-row">
+          <div className="flex-1 p-5">
             {show.logo && !logoError && (
               <div className="mb-3">
                 <Image
@@ -164,7 +164,7 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
                 デビューグループ: {show.officialWebsite ? (
                   <span
-                    className="font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 cursor-pointer hover:underline inline-flex items-center gap-1"
+                    className="font-semibold text-mint-600 hover:text-mint-500 dark:text-mint-400 dark:hover:text-mint-300 cursor-pointer hover:underline inline-flex items-center gap-1"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -183,39 +183,60 @@ function ShowCard({ show, index, selectedContestant, hasSelection, getInitials, 
             )}
           </div>
 
-          {selectedContestant && (
-            <div className="relative w-full h-56 md:w-48 md:h-auto group">
-              <div className={`absolute inset-0 bg-gradient-to-br ${getGradientColor(selectedContestant.displayName)} flex items-center justify-center`}>
-                {!imageError ? (
-                  <Image
-                    src={selectedContestant.image}
-                    alt={selectedContestant.displayName}
-                    fill
-                    className="object-cover"
-                    loading="lazy"
-                    onError={() => setImageError(true)}
-                  />
-                ) : (
-                  <div className="text-white font-bold">
-                    <span className="text-4xl">{getInitials(selectedContestant.displayName)}</span>
-                  </div>
-                )}
-              </div>
-              {/* Gradient overlay */}
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Name and furigana */}
-              <div className="absolute inset-x-0 bottom-0 p-3 text-white z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                <p className="font-bold text-sm leading-tight line-clamp-2">
-                  {selectedContestant.displayName}
-                </p>
-                {selectedContestant.furigana && (
-                  <p className="text-xs opacity-90 mt-0.5 truncate">
-                    {selectedContestant.furigana}
+          <div className="relative w-full h-56 md:w-48 md:h-auto group">
+            {selectedContestant ? (
+              <>
+                <div className={`absolute inset-0 bg-gradient-to-br ${getGradientColor(selectedContestant.displayName)} flex items-center justify-center`}>
+                  {!imageError ? (
+                    <Image
+                      src={selectedContestant.image}
+                      alt={selectedContestant.displayName}
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      onError={() => setImageError(true)}
+                    />
+                  ) : (
+                    <div className="text-white font-bold">
+                      <span className="text-4xl">{getInitials(selectedContestant.displayName)}</span>
+                    </div>
+                  )}
+                </div>
+                {/* Gradient overlay */}
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300" />
+                {/* Name and furigana */}
+                <div className="absolute inset-x-0 bottom-0 p-3 text-white z-10 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+                  <p className="font-bold text-sm leading-tight line-clamp-2">
+                    {selectedContestant.displayName}
                   </p>
-                )}
+                  {selectedContestant.furigana && (
+                    <p className="text-xs opacity-90 mt-0.5 truncate">
+                      {selectedContestant.furigana}
+                    </p>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="absolute inset-0 bg-mint-100/50 dark:bg-mint-600/20 backdrop-blur-sm flex items-center justify-center">
+                <div className="text-center text-mint-600 dark:text-mint-400">
+                  <svg
+                    className="w-12 h-12 mx-auto mb-2 opacity-50"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  <p className="font-medium text-lg">未選択</p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </Link>
     </motion.div>
