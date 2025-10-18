@@ -10,7 +10,7 @@ import { useSelections } from '@/hooks/useSelections';
 export default function Home() {
   const { getSelectionCount, hasSelection, getSelection } = useSelections();
 
-  const sortedShows = [...shows].sort((a, b) => a.year - b.year);
+  const sortedShows = [...shows].sort((a, b) => a.title.localeCompare(b.title, 'ja'));
 
   const selectionCount = getSelectionCount();
 
