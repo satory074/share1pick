@@ -209,6 +209,9 @@ export default function MyPicksPage() {
               <div className="flex flex-col lg:flex-row gap-8 items-center justify-center">
                 <div className="flex-shrink-0">
                   <MultiPickShareImage multiPicks={multiPicks} />
+                  <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
+                    💡 クリックで背景色変更 (12種類)
+                  </p>
                 </div>
 
                 <div className="text-center lg:text-left max-w-md">

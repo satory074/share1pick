@@ -1,12 +1,34 @@
 'use client';
 
 import { MultiPickData } from '@/types';
+import { useState } from 'react';
 
 interface MultiPickShareImageProps {
   multiPicks: MultiPickData[];
 }
 
+// 12種類の背景色プリセット
+const BACKGROUND_PRESETS = [
+  { name: 'Mint + Coral', gradient: 'linear-gradient(to bottom right, rgb(93, 217, 185), rgb(255, 138, 128))' },
+  { name: 'Purple + Pink + Orange', gradient: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(236, 72, 153), rgb(251, 146, 60))' },
+  { name: 'Mint + Blue + Coral', gradient: 'linear-gradient(to bottom right, rgb(93, 217, 185), rgb(110, 197, 255), rgb(255, 138, 128))' },
+  { name: 'Blue + Purple', gradient: 'linear-gradient(to bottom right, rgb(110, 197, 255), rgb(168, 85, 247))' },
+  { name: 'Coral + Gold', gradient: 'linear-gradient(to bottom right, rgb(255, 138, 128), rgb(255, 213, 79))' },
+  { name: 'Pink + Purple', gradient: 'linear-gradient(to bottom right, rgb(236, 72, 153), rgb(168, 85, 247))' },
+  { name: 'Ocean', gradient: 'linear-gradient(to bottom right, rgb(56, 189, 248), rgb(20, 184, 166))' },
+  { name: 'Sunset', gradient: 'linear-gradient(to bottom right, rgb(251, 146, 60), rgb(239, 68, 68), rgb(168, 85, 247))' },
+  { name: 'Forest', gradient: 'linear-gradient(to bottom right, rgb(34, 197, 94), rgb(16, 185, 129))' },
+  { name: 'Lavender', gradient: 'linear-gradient(to bottom right, rgb(167, 139, 250), rgb(236, 72, 153), rgb(147, 197, 253))' },
+  { name: 'Fire', gradient: 'linear-gradient(to bottom right, rgb(239, 68, 68), rgb(251, 146, 60), rgb(250, 204, 21))' },
+  { name: 'Night', gradient: 'linear-gradient(to bottom right, rgb(30, 58, 138), rgb(109, 40, 217), rgb(219, 39, 119))' },
+];
+
 export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageProps) {
+  // ランダムな初期背景色
+  const [backgroundIndex, setBackgroundIndex] = useState(() =>
+    Math.floor(Math.random() * BACKGROUND_PRESETS.length)
+  );
+
   const getGridConfig = (count: number) => {
     if (count <= 1) return { cols: 1, rows: 1, width: 400, height: 600 };
     if (count <= 2) return { cols: 2, rows: 1, width: 600, height: 400 };
@@ -26,18 +48,26 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
     return imageUrl;
   };
 
+  // 次の背景色に切り替え
+  const handleBackgroundChange = () => {
+    setBackgroundIndex((prev) => (prev + 1) % BACKGROUND_PRESETS.length);
+  };
+
   const gridConfig = getGridConfig(multiPicks.length);
+  const currentBackground = BACKGROUND_PRESETS[backgroundIndex];
 
   return (
     <div
       id="multi-pick-share-preview"
-      className="p-6 text-white relative overflow-hidden"
+      className="p-6 text-white relative overflow-hidden cursor-pointer"
+      onClick={handleBackgroundChange}
       style={{
         width: `${gridConfig.width}px`,
         height: `${gridConfig.height}px`,
         fontFamily: 'Inter, sans-serif',
-        background: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(236, 72, 153), rgb(251, 146, 60))'
+        background: currentBackground.gradient
       }}
+      title="クリックで背景色変更"
     >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}></div>
 
@@ -87,6 +117,12 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
 
       <div className="absolute top-4 left-4 text-xs" style={{ opacity: 0.7 }}>
         {multiPicks.length} Picks
+      </div>
+
+      {/* 背景色プリセット番号とヒント */}
+      <div className="absolute bottom-4 right-4 text-xs text-right" style={{ opacity: 0.7 }}>
+        <div>{currentBackground.name}</div>
+        <div className="mt-1">{backgroundIndex + 1}/{BACKGROUND_PRESETS.length}</div>
       </div>
     </div>
   );
