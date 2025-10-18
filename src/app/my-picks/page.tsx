@@ -4,17 +4,15 @@ import { useSelections } from '@/hooks/useSelections';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import html2canvas from 'html2canvas';
 import MultiPickShareImage from '@/components/MultiPickShareImage';
 import Image from 'next/image';
 import { generateMultiPickShareText, generateTwitterShareText, copyToClipboard, encodeShareData } from '@/lib/shareUtils';
 
 export default function MyPicksPage() {
-  const { getAllMultiPickData, getSelectionCount, removeSelection, clearAllSelections } = useSelections();
+  const { getAllMultiPickData, getSelectionCount, removeSelection } = useSelections();
   const [shareText, setShareText] = useState('');
   const [showTweetModal, setShowTweetModal] = useState(false);
   const [tweetText, setTweetText] = useState('');
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const multiPicks = getAllMultiPickData();
   const selectionCount = getSelectionCount();
@@ -30,49 +28,6 @@ export default function MyPicksPage() {
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showTweetModal]);
-
-  const generateShareImage = async () => {
-    if (multiPicks.length === 0) return;
-
-    setIsGeneratingImage(true);
-    try {
-      const element = document.getElementById('multi-pick-share-preview');
-      if (element) {
-        // 画像の読み込みを待つ
-        const images = element.querySelectorAll('img');
-        await Promise.all(
-          Array.from(images).map(
-            (img) =>
-              new Promise((resolve) => {
-                if (img.complete) {
-                  resolve(true);
-                } else {
-                  img.onload = () => resolve(true);
-                  img.onerror = () => resolve(true);
-                }
-              })
-          )
-        );
-
-        const canvas = await html2canvas(element, {
-          backgroundColor: '#ffffff',
-          scale: 2,
-          useCORS: true,
-          allowTaint: false
-        });
-
-        const link = document.createElement('a');
-        link.download = `my-allstar-1picks-${multiPicks.length}shows.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      }
-    } catch (error) {
-      console.error('Failed to generate image:', error);
-      alert('画像の生成に失敗しました。');
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
 
   const handleGenerateShareText = () => {
     const text = generateMultiPickShareText(multiPicks);
@@ -96,12 +51,6 @@ export default function MyPicksPage() {
   const handleRemoveSelection = (showId: string) => {
     if (confirm('この選択を削除しますか？')) {
       removeSelection(showId);
-    }
-  };
-
-  const handleClearAll = () => {
-    if (confirm(`全ての選択（${selectionCount}件）を削除しますか？`)) {
-      clearAllSelections();
     }
   };
 
@@ -232,14 +181,6 @@ export default function MyPicksPage() {
                     </button>
 
                     <button
-                      onClick={generateShareImage}
-                      disabled={isGeneratingImage}
-                      className="w-full bg-mint-600 hover:bg-mint-500 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg"
-                    >
-                      {isGeneratingImage ? '画像を生成中...' : '画像をダウンロード'}
-                    </button>
-
-                    <button
                       onClick={handleCopyShareText}
                       className="w-full bg-coral-600 hover:bg-coral-500 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                     >
@@ -251,13 +192,6 @@ export default function MyPicksPage() {
                         {shareText}
                       </div>
                     )}
-
-                    <button
-                      onClick={handleClearAll}
-                      className="w-full bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors text-sm"
-                    >
-                      全て削除
-                    </button>
                   </div>
                 </div>
               </div>
