@@ -10,8 +10,6 @@ import { useSelections } from '@/hooks/useSelections';
 export default function Home() {
   const { getSelectionCount, hasSelection, getSelection } = useSelections();
 
-  const sortedShows = [...shows].sort((a, b) => a.title.localeCompare(b.title, 'ja'));
-
   const selectionCount = getSelectionCount();
 
   const getInitials = (displayName: string): string => {
@@ -70,7 +68,7 @@ export default function Home() {
           transition={{ duration: 0.6 }}
         >
           <div className="space-y-4">
-            {sortedShows.map((show, index) => {
+            {shows.map((show, index) => {
               const selection = getSelection(show.id);
               const selectedContestant = selection
                 ? show.contestants.find(c => c.id === selection.contestantId)

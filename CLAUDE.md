@@ -78,7 +78,7 @@ Share URLs use a minimal encoding strategy to keep URLs short:
 - Pages use `pb-28` padding to prevent content overlap
 
 **Layout**:
-- Homepage displays shows in chronological single-column list (sorted by year)
+- Homepage displays shows in single-column list (order determined by array position in `src/data/shows.ts`)
 - Show cards display optional logo above title (48px height, auto width, SVG recommended)
 - Selected contestant display:
   - **Desktop**: Left-right split layout with show info on left (flex-1) and full-height contestant image on right (192px width)
@@ -128,7 +128,7 @@ All show and contestant data is statically defined in `src/data/shows.ts`. No ex
 {
   id: string;
   title: string;
-  year: number;  // Used for chronological sorting
+  year: number;  // Used for metadata; display order determined by array position in shows.ts
   debutGroup?: string;
   officialWebsite?: string;
   logo?: string;  // Path to show logo (SVG recommended, displayed on homepage)
@@ -179,6 +179,19 @@ To add a new show, modify `src/data/shows.ts`:
 2. Save to `public/images/logos/` directory
 3. Add `logo` field to show data pointing to the saved file
 4. Logo displayed above show title on homepage (height: 48px, auto width)
+
+### Customizing Show Display Order
+
+The homepage displays shows in the exact order they appear in the `src/data/shows.ts` array (no automatic sorting).
+
+**To change the display order**:
+1. Open `src/data/shows.ts`
+2. Rearrange the show objects in the `shows` array using cut & paste
+3. Save the file - changes reflect immediately in dev mode
+
+**Example**: To display Japanese shows first, move those objects to the top of the array.
+
+**Note**: The `year` field is still used for metadata and documentation, but does not affect display order.
 
 ## Critical Technical Constraints
 
