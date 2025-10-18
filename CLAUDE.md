@@ -44,7 +44,7 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 
 ### Key Components
 - **`ContestantCard`**: Individual contestant display showing only name and furigana. Supports disabled state during selection. Features placeholder system with initials extraction and dynamic gradient backgrounds based on name hash (8 gradient combinations).
-- **`MultiPickShareImage`**: Generates collage-style images with responsive grid layout that adjusts dimensions based on selection count (1-10+ picks).
+- **`MultiPickShareImage`**: Generates minimalist share images with responsive grid layout. Design philosophy: ultra-simple with only contestant photos/names, pick count in top-left, and gradient background (purple→pink→orange). No headers, footers, show names, or decorative emojis. Grid adjusts dimensions based on selection count (1-10+ picks).
 - **`useSelections`**: Custom hook for managing multiple selections in localStorage with legacy migration.
 - **`shareUtils.ts`**: Utilities for social sharing including:
   - `generateTwitterShareText()`: Creates tweet text with contestant `displayName` hashtags + #1pick + #Share1Pick (no show hashtags, fits in 140 chars)

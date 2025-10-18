@@ -41,20 +41,7 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
     >
       <div className="absolute inset-0" style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}></div>
 
-      <div className="relative z-10 h-full flex flex-col">
-        <div className="text-center mb-6">
-          <div className="text-sm uppercase tracking-wider mb-2" style={{ opacity: 0.9 }}>
-            MY ALL-STAR 1PICKS
-          </div>
-          <h1 className="text-2xl font-bold mb-2 leading-tight">
-            {multiPicks.length}つの番組から選んだ推しメン
-          </h1>
-          <div className="text-sm" style={{ opacity: 0.9 }}>
-            サバイバルオーディション 1pick コレクション
-          </div>
-        </div>
-
-        <div className="flex-1 flex items-center justify-center">
+      <div className="relative z-10 h-full flex items-center justify-center">
           <div
             className="grid gap-4 w-full max-w-full"
             style={{
@@ -90,46 +77,16 @@ export default function MultiPickShareImage({ multiPicks }: MultiPickShareImageP
                     }}
                   />
                 </div>
-                <div className="text-xs font-semibold mb-1 truncate w-full">
+                <div className="text-xs font-semibold truncate w-full">
                   {contestant.displayName}
-                </div>
-                <div className="text-xs truncate w-full" style={{ opacity: 0.8 }}>
-                  {show.title}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="text-center mt-6">
-          <div className="text-xs mb-2" style={{ opacity: 0.8 }}>
-            Created with
-          </div>
-          <div className="text-lg font-bold">
-            Share1Pick
-          </div>
-          <div className="text-xs" style={{ opacity: 0.7 }}>
-            share1pick.vercel.app
-          </div>
-        </div>
-      </div>
-
-      <div
-        className="absolute top-4 right-4 w-12 h-12 rounded-full flex items-center justify-center"
-        style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-      >
-        <span className="text-lg">🎤</span>
-      </div>
-
-      <div
-        className="absolute bottom-4 left-4 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-      >
-        <span className="text-sm">⭐</span>
       </div>
 
       <div className="absolute top-4 left-4 text-xs" style={{ opacity: 0.7 }}>
-        {multiPicks.length} PICKS
+        {multiPicks.length} Picks
       </div>
     </div>
   );
