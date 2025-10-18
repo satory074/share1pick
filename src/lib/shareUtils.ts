@@ -1,4 +1,5 @@
 import { Show, Contestant, MultiPickData } from '@/types';
+import { shows } from '@/data/shows';
 
 export function generateHashtags(show: Show): string[] {
   const baseHashtags = ['1pick', 'Share1Pick'];
@@ -94,39 +95,17 @@ export function generateContestantHashtag(contestantName: string, furigana?: str
 
 export function generateTwitterShareText(multiPicks: MultiPickData[]): string {
   const baseHashtags = ['1pick', 'Share1Pick'];
-  const allShowTags = new Set<string>();
   const contestantHashtags: string[] = [];
 
-  multiPicks.forEach(({ show, contestant }) => {
-    // 番組ごとのハッシュタグを収集
-    const showSpecificHashtags = {
-      'produce101': ['PRODUCE101', 'IOI', 'プデュ'],
-      'produce101-s2': ['PRODUCE101SEASON2', 'WannaOne', 'プデュ2'],
-      'produce48': ['PRODUCE48', 'IZONE', 'プデュ48'],
-      'produce-x-101': ['PRODUCEX101', 'X1', 'プデュX'],
-      'produce101-japan': ['PRODUCE101JAPAN', 'JO1', '日プ'],
-      'produce101-japan-s2': ['PRODUCE101JAPAN_SEASON2', 'INI', '日プ2'],
-      'produce101-japan-girls': ['PRODUCE101JAPAN_THE_GIRLS', 'MEI', '日プ女子'],
-      'girls-planet-999': ['GirlsPlanet999', 'Kep1er', 'ガルプラ'],
-      'boys-planet': ['BoysPlanet', 'ZEROBASEONE', 'ZB1', 'ボイプラ'],
-      'i-land': ['ILAND', 'ENHYPEN', 'アイランド'],
-      'r-u-next': ['RUNext', 'ILLIT', 'アルネク'],
-      'nizi-project': ['NiziProject', 'NiziU', '虹プロ']
-    };
-
-    const showTags = showSpecificHashtags[show.id as keyof typeof showSpecificHashtags] || [];
-    showTags.forEach(tag => allShowTags.add(tag));
-
-    // 参加者のハッシュタグを生成
-    const hashtag = generateContestantHashtag(contestant.displayName, contestant.furigana);
-    contestantHashtags.push(`#${hashtag}`);
+  multiPicks.forEach(({ contestant }) => {
+    // 参加者の本名（displayName）をそのままハッシュタグに使用
+    contestantHashtags.push(`#${contestant.displayName}`);
   });
 
-  // 全てのハッシュタグを結合
+  // 参加者ハッシュタグ + 基本ハッシュタグのみ
   const allHashtags = [
     ...contestantHashtags,
-    ...baseHashtags.map(tag => `#${tag}`),
-    ...Array.from(allShowTags).map(tag => `#${tag}`)
+    ...baseHashtags.map(tag => `#${tag}`)
   ].join(' ');
 
   return `私のオールスター1pickコレクション🎤\n\n${allHashtags}`;
@@ -160,6 +139,16 @@ export function copyToClipboard(text: string): Promise<boolean> {
 }
 
 // 共有URLのためのデータエンコード/デコード
+
+// 最小化されたデータ構造（URLサイズ削減のため）
+interface MinimalShareData {
+  picks: Array<{
+    s: string; // showId
+    c: string; // contestantId
+  }>;
+}
+
+// 完全なデータ構造（後方互換性のため保持）
 export interface ShareData {
   picks: Array<{
     showId: string;
@@ -170,19 +159,28 @@ export interface ShareData {
   }>;
 }
 
+// showIdとcontestantIdから完全なデータを復元するヘルパー関数
+function findContestantData(showId: string, contestantId: string): { show: Show; contestant: Contestant } | null {
+  const show = shows.find(s => s.id === showId);
+  if (!show) return null;
+
+  const contestant = show.contestants.find(c => c.id === contestantId);
+  if (!contestant) return null;
+
+  return { show, contestant };
+}
+
 export function encodeShareData(multiPicks: MultiPickData[]): string {
-  const shareData: ShareData = {
+  // 最小化されたデータ構造を使用してURLサイズを削減
+  const minimalData: MinimalShareData = {
     picks: multiPicks.map(({ show, contestant }) => ({
-      showId: show.id,
-      showTitle: show.title,
-      contestantId: contestant.id,
-      contestantName: contestant.displayName,
-      contestantFurigana: contestant.furigana,
+      s: show.id,
+      c: contestant.id,
     })),
   };
 
   // JSONを文字列化してBase64エンコード
-  const jsonString = JSON.stringify(shareData);
+  const jsonString = JSON.stringify(minimalData);
   const base64 = Buffer.from(jsonString).toString('base64');
   // URL safe にする
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
@@ -198,9 +196,42 @@ export function decodeShareData(shareId: string): ShareData | null {
 
     // Base64デコードしてJSONパース
     const jsonString = Buffer.from(base64WithPadding, 'base64').toString('utf-8');
-    const shareData = JSON.parse(jsonString) as ShareData;
+    const parsed = JSON.parse(jsonString);
 
-    return shareData;
+    // 最小化データか完全データかを判定
+    if (parsed.picks && parsed.picks.length > 0) {
+      const firstPick = parsed.picks[0];
+
+      // 最小化データの場合（'s'と'c'フィールドを持つ）
+      if ('s' in firstPick && 'c' in firstPick) {
+        const minimalData = parsed as MinimalShareData;
+
+        // shows.tsからデータを復元
+        const restoredPicks = minimalData.picks
+          .map(pick => {
+            const data = findContestantData(pick.s, pick.c);
+            if (!data) return null;
+
+            return {
+              showId: data.show.id,
+              showTitle: data.show.title,
+              contestantId: data.contestant.id,
+              contestantName: data.contestant.displayName,
+              contestantFurigana: data.contestant.furigana,
+            };
+          })
+          .filter((pick): pick is NonNullable<typeof pick> => pick !== null);
+
+        if (restoredPicks.length === 0) return null;
+
+        return { picks: restoredPicks };
+      }
+
+      // 完全データの場合（後方互換性のため）
+      return parsed as ShareData;
+    }
+
+    return null;
   } catch (error) {
     console.error('Failed to decode share data:', error);
     return null;

@@ -46,7 +46,19 @@ This is a Next.js 15 application using App Router for a survival audition show 1
 - **`ContestantCard`**: Individual contestant display showing only name and furigana. Supports disabled state during selection. Features placeholder system with initials extraction and dynamic gradient backgrounds based on name hash (8 gradient combinations).
 - **`MultiPickShareImage`**: Generates collage-style images with responsive grid layout that adjusts dimensions based on selection count (1-10+ picks).
 - **`useSelections`**: Custom hook for managing multiple selections in localStorage with legacy migration.
-- **`shareUtils.ts`**: Dynamic hashtag generation from furigana (Japanese) or displayName (Korean/Chinese). Provides Twitter/X optimized text and clipboard integration.
+- **`shareUtils.ts`**: Utilities for social sharing including:
+  - `generateTwitterShareText()`: Creates tweet text with contestant `displayName` hashtags + #1pick + #Share1Pick (no show hashtags, fits in 140 chars)
+  - `encodeShareData()`/`decodeShareData()`: Minimal URL encoding using only showId+contestantId, restores full data from `shows.ts`
+  - `copyToClipboard()`: Cross-browser clipboard support
+
+### Share URL System
+Share URLs use a minimal encoding strategy to keep URLs short:
+- Encodes only `showId` and `contestantId` (not full contestant data)
+- Base64-encoded with URL-safe characters
+- Average length: ~120 characters for typical multi-pick
+- `decodeShareData()` restores full data by looking up IDs in `src/data/shows.ts`
+- Backward compatible: handles both old (full data) and new (minimal) formats
+- Used by: `/share/[shareId]` page and OGP image generation
 
 ### User Flow & UI
 **Intentional Simplifications**:
@@ -154,7 +166,7 @@ To add a new show, modify `src/data/shows.ts`:
 }
 ```
 
-Also update hashtag mapping in `generateHashtags()` and `generateMultiPickShareText()` in `src/lib/shareUtils.ts`.
+**Important**: When adding new shows, you do NOT need to update hashtag mappings in `src/lib/shareUtils.ts`. The Twitter sharing feature (`generateTwitterShareText()`) only uses contestant names (`displayName`) + `#1pick` + `#Share1Pick` - no show-specific hashtags.
 
 **Adding Show Logos**:
 1. Download official logo from show's website (SVG format preferred)
@@ -192,6 +204,11 @@ The `ImageResponse` API (`src/app/share/[shareId]/opengraph-image.tsx`) uses Sat
 - `metadataBase: new URL('https://share1pick.vercel.app')` is **required** in `src/app/layout.tsx`
 - `generateMetadata` cannot be exported from `'use client'` components
 - Pattern: Server component exports `generateMetadata`, UI logic in separate client component
+
+**OGP Image Behavior**:
+- OGP images do NOT display in Twitter/X Web Intent compose dialog (this is normal Twitter behavior)
+- OGP images DO display after the tweet is posted and when the URL is shared
+- To verify OGP: View page source and check `<meta property="og:image">` or use Twitter Card Validator
 
 ### Image Proxy for CORS
 
@@ -255,8 +272,26 @@ When adding images from new external sources, update the `remotePatterns` array.
 - Homepage show cards use `ShowCard` component with independent image error state for each contestant thumbnail
 - Sticky bars use separate image error states for proper fallback handling
 
+### Modal Pattern (Tweet Modal)
+The tweet modal in `src/app/my-picks/page.tsx` demonstrates the app's modal pattern:
+- Uses Framer Motion for smooth animations (`initial`, `animate`, `exit`)
+- Backdrop click closes modal (with `onClick` on outer div, `stopPropagation` on inner)
+- ESC key support via `useEffect` with keyboard listener
+- Editable textarea for tweet text with character count
+- Visual hashtag preview matching actual tweet content
+- Modal UI must stay in sync with share logic (both use `displayName` for hashtags)
+
 ### User Flow After Selection
 After selecting a contestant on show detail pages, users remain on the same page to browse other contestants. They return to homepage using the "ホーム" button in the sticky bottom bar.
+
+### Twitter/X Sharing Flow
+The "Xでシェア" button on `/my-picks` page follows this flow:
+1. Generates share URL: `https://share1pick.vercel.app/share/{shareId}`
+2. Creates tweet text with contestant hashtags only (no show hashtags): `#参加者名 #1pick #Share1Pick`
+3. Attempts Web Share API first (mobile-friendly)
+4. Falls back to Twitter Web Intent if Web Share unavailable
+5. **Important**: Tweet text + URL must fit in 140 characters (Twitter counts all URLs as 23 chars via t.co)
+6. OGP image displays after tweet is posted, not in compose dialog
 
 ### Hover Effects
 Homepage contestant cards use Tailwind's `group` utility for hover detection:

@@ -11,11 +11,10 @@ import { generateMultiPickShareText, generateTwitterShareText, copyToClipboard, 
 
 export default function MyPicksPage() {
   const { getAllMultiPickData, getSelectionCount, removeSelection, clearAllSelections } = useSelections();
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [shareText, setShareText] = useState('');
   const [showTweetModal, setShowTweetModal] = useState(false);
   const [tweetText, setTweetText] = useState('');
-  const [generatedImageBlob, setGeneratedImageBlob] = useState<Blob | null>(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   const multiPicks = getAllMultiPickData();
   const selectionCount = getSelectionCount();
@@ -31,69 +30,6 @@ export default function MyPicksPage() {
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showTweetModal]);
-
-  const generateShareImageBlob = async (): Promise<Blob | null> => {
-    if (multiPicks.length === 0) return null;
-
-    try {
-      const element = document.getElementById('multi-pick-share-preview');
-      if (!element) {
-        console.error('Element with id "multi-pick-share-preview" not found');
-        return null;
-      }
-
-      console.log('Found element, waiting for images to load...');
-
-      // 画像の読み込みを待つ
-      const images = element.querySelectorAll('img');
-      await Promise.all(
-        Array.from(images).map(
-          (img) =>
-            new Promise((resolve) => {
-              if (img.complete) {
-                resolve(true);
-              } else {
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(true); // エラーでも続行
-              }
-            })
-        )
-      );
-
-      console.log('All images loaded, generating canvas...');
-
-      const canvas = await html2canvas(element, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-        useCORS: true,
-        allowTaint: false,
-        logging: true,
-        onclone: (clonedDoc) => {
-          console.log('Document cloned for rendering');
-        }
-      });
-
-      console.log('Canvas generated, converting to blob...');
-
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            console.log('Blob generated successfully, size:', blob.size);
-          } else {
-            console.error('Failed to generate blob from canvas');
-          }
-          resolve(blob);
-        }, 'image/png');
-      });
-    } catch (error) {
-      console.error('Failed to generate image blob:', error);
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-      }
-      return null;
-    }
-  };
 
   const generateShareImage = async () => {
     if (multiPicks.length === 0) return;
@@ -169,40 +105,12 @@ export default function MyPicksPage() {
     }
   };
 
-  const handleShowTweetModal = async () => {
+  const handleShowTweetModal = () => {
     if (multiPicks.length === 0) return;
 
-    setIsGeneratingImage(true);
-
-    try {
-      // 画像を生成
-      const imageBlob = await generateShareImageBlob();
-      const twitterText = generateTwitterShareText(multiPicks);
-
-      if (!imageBlob) {
-        alert('画像の生成に失敗しました。');
-        setIsGeneratingImage(false);
-        return;
-      }
-
-      console.log('Image blob generated successfully');
-
-      // モーダルに表示するデータを設定
-      setGeneratedImageBlob(imageBlob);
-      setTweetText(twitterText);
-      setShowTweetModal(true);
-    } catch (error) {
-      console.error('Failed to generate image:', error);
-      if (error instanceof Error) {
-        console.error('Error message:', error.message);
-        console.error('Error stack:', error.stack);
-        alert(`画像の生成に失敗しました。\nエラー: ${error.message}`);
-      } else {
-        alert('画像の生成に失敗しました。');
-      }
-    } finally {
-      setIsGeneratingImage(false);
-    }
+    const twitterText = generateTwitterShareText(multiPicks);
+    setTweetText(twitterText);
+    setShowTweetModal(true);
   };
 
   const handleConfirmTweet = async () => {
@@ -214,69 +122,33 @@ export default function MyPicksPage() {
     const tweetTextWithUrl = `${tweetText}\n\n${shareUrl}`;
 
     // Web Share API の利用を試みる
-    let webShareSuccess = false;
-
-    if (typeof navigator.share !== 'undefined' && typeof navigator.canShare !== 'undefined') {
+    if (typeof navigator.share !== 'undefined') {
       try {
-        // 画像がある場合はファイル共有を試みる
-        if (generatedImageBlob) {
-          const file = new File([generatedImageBlob], `my-allstar-1picks-${multiPicks.length}shows.png`, {
-            type: 'image/png',
-          });
+        const shareData = {
+          text: tweetTextWithUrl,
+        };
 
-          const shareData = {
-            text: tweetText,
-            files: [file],
-          };
-
-          console.log('Checking if can share with files...');
-
-          if (navigator.canShare(shareData)) {
-            console.log('Web Share API with files is supported, attempting to share...');
-            await navigator.share(shareData);
-            console.log('Web Share API succeeded');
-            webShareSuccess = true;
-            setShowTweetModal(false);
-            return;
-          } else {
-            console.log('Web Share API does not support file sharing');
-          }
-        } else {
-          // 画像がない場合はURLのみ共有
-          const shareData = {
-            text: tweetTextWithUrl,
-          };
-
-          if (navigator.canShare(shareData)) {
-            console.log('Web Share API with URL is supported, attempting to share...');
-            await navigator.share(shareData);
-            console.log('Web Share API succeeded');
-            webShareSuccess = true;
-            setShowTweetModal(false);
-            return;
-          }
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          setShowTweetModal(false);
+          return;
         }
       } catch (error) {
         const err = error as Error;
         if (err.name === 'AbortError') {
-          console.log('User cancelled the share');
+          // ユーザーがキャンセル
           setShowTweetModal(false);
           return;
         }
+        // それ以外のエラーはフォールバックへ
         console.warn('Web Share API failed, will fallback to Twitter Web Intent:', err);
       }
-    } else {
-      console.log('Web Share API not available');
     }
 
-    // Web Share API が使えない場合は Twitter Web Intent にフォールバック（URLを含める）
-    if (!webShareSuccess) {
-      console.log('Using Twitter Web Intent fallback with share URL');
-      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetTextWithUrl)}`;
-      window.open(tweetUrl, '_blank', 'noopener,noreferrer');
-
-      setShowTweetModal(false);
-    }
+    // Web Share API が使えない場合は Twitter Web Intent にフォールバック
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetTextWithUrl)}`;
+    window.open(tweetUrl, '_blank', 'noopener,noreferrer');
+    setShowTweetModal(false);
   };
 
   return (
@@ -350,15 +222,10 @@ export default function MyPicksPage() {
                   <div className="space-y-3">
                     <button
                       onClick={handleShowTweetModal}
-                      disabled={isGeneratingImage}
-                      className="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
                     >
-                      {isGeneratingImage ? '生成中...' : (
-                        <>
-                          <span>Xでシェア</span>
-                          <span>𝕏</span>
-                        </>
-                      )}
+                      <span>Xでシェア</span>
+                      <span>𝕏</span>
                     </button>
 
                     <button
@@ -524,18 +391,6 @@ export default function MyPicksPage() {
 
             {/* コンテンツ */}
             <div className="p-6 space-y-6">
-              {/* 画像プレビュー */}
-              {generatedImageBlob && (
-                <div className="flex justify-center">
-                  <img
-                    src={URL.createObjectURL(generatedImageBlob)}
-                    alt="Share preview"
-                    className="rounded-lg shadow-lg max-w-full h-auto"
-                    style={{ maxHeight: '300px' }}
-                  />
-                </div>
-              )}
-
               {/* ツイート内容 */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-3">
@@ -565,9 +420,8 @@ export default function MyPicksPage() {
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {multiPicks.map(({ contestant }) => {
-                      const hashtag = contestant.furigana
-                        ? `#${contestant.furigana.replace(/・/g, '')}`
-                        : `#${contestant.displayName}`;
+                      // 参加者の本名（displayName）をそのまま使用
+                      const hashtag = `#${contestant.displayName}`;
                       return (
                         <span
                           key={contestant.id}
