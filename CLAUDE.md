@@ -258,6 +258,21 @@ images: {
       protocol: 'https',
       hostname: '3rd.produce101.jp',
       pathname: '/static/produce101s3/profile/**',
+    },
+    {
+      protocol: 'https',
+      hostname: 'kprofiles.com',
+      pathname: '/wp-content/uploads/**',
+    },
+    {
+      protocol: 'https',
+      hostname: 'kpopping.com',
+      pathname: '/documents/**',
+    },
+    {
+      protocol: 'https',
+      hostname: 'img.youtube.com',
+      pathname: '/vi/**',
     }
   ]
 }
@@ -327,7 +342,7 @@ Configured for Vercel deployment with Tokyo region (hnd1). Static assets cached 
 **Production URL**: https://share1pick.vercel.app
 
 **Technology Stack**:
-- Next.js 15.5.4 with App Router (Turbopack for dev only)
+- Next.js 15.5.9 with App Router (Turbopack for dev only)
 - TypeScript 5 with strict mode
 - React 19.1.0
 - Tailwind CSS 4 with PostCSS

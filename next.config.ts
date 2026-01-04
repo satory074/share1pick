@@ -12,6 +12,16 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'kprofiles.com',
         pathname: '/wp-content/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'kpopping.com',
+        pathname: '/documents/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
       }
     ]
   }
