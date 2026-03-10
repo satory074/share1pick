@@ -1,4 +1,4 @@
-import { decodeShareData } from '@/lib/shareUtils';
+import { decodeShareData } from '@/shared/utils/share';
 import type { Metadata } from 'next';
 import SharePageClient from './SharePageClient';
 
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `オールスター1pickコレクション - ${shareData.picks.length}つの番組から選んだ推しメン`;
-  const description = shareData.picks.map(p => `${p.showTitle}: ${p.contestantName}`).join(', ');
+  const description = shareData.picks.map((p) => `${p.showTitle}: ${p.contestantName}`).join(', ');
   const ogImageUrl = `/share/${resolvedParams.shareId}/opengraph-image`;
 
   return {
@@ -27,14 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: 'オールスター1pickコレクション',
-        },
-      ],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: 'オールスター1pickコレクション' }],
       type: 'website',
       locale: 'ja_JP',
     },
@@ -49,6 +42,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SharePage({ params }: PageProps) {
   const resolvedParams = await params;
+  // サーバーサイドでデコードして props で渡す
+  const shareData = decodeShareData(resolvedParams.shareId);
 
-  return <SharePageClient shareId={resolvedParams.shareId} />;
+  return <SharePageClient shareData={shareData} />;
 }

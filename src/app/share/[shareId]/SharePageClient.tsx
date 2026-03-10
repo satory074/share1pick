@@ -1,30 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { decodeShareData, ShareData } from '@/lib/shareUtils';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { ShareData } from '@/shared/utils/share';
 
 interface SharePageClientProps {
-  shareId: string;
+  shareData: ShareData | null;
 }
 
-export default function SharePageClient({ shareId }: SharePageClientProps) {
-  const [shareData, setShareData] = useState<ShareData | null>(null);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const data = decodeShareData(shareId);
-    if (data) {
-      setShareData(data);
-    } else {
-      setError(true);
-    }
-  }, [shareId]);
-
-  if (error) {
+export default function SharePageClient({ shareData }: SharePageClientProps) {
+  if (!shareData || shareData.picks.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -39,7 +26,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
           </p>
           <Link
             href="/"
-            className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+            className="inline-block bg-mint-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-mint-500 transition-colors"
           >
             ホームに戻る
           </Link>
@@ -48,16 +35,8 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
     );
   }
 
-  if (!shareData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900 flex items-center justify-center">
-        <div className="text-gray-600 dark:text-gray-300">読み込み中...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-900 dark:to-purple-900">
+    <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface">
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -83,7 +62,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
               key={`${pick.showId}-${pick.contestantId}`}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 * index }}
+              transition={{ delay: Math.min(0.1 * index, 0.3) }}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
             >
               <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2">
@@ -116,7 +95,7 @@ export default function SharePageClient({ shareId }: SharePageClientProps) {
         >
           <Link
             href="/"
-            className="inline-block bg-purple-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-purple-700 transition-colors text-lg"
+            className="inline-block bg-mint-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-mint-500 transition-colors text-lg"
           >
             あなたも1pickを選んでシェアする
           </Link>

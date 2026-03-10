@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { decodeShareData } from '@/lib/shareUtils';
+import { decodeShareData } from '@/shared/utils/share';
 
 export const runtime = 'edge';
 export const alt = 'オールスター1pickコレクション';
