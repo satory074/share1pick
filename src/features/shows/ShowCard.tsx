@@ -23,7 +23,7 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.1, 0.3) }}
       whileHover={{ scale: 1.02 }}
-      className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative min-h-[200px]"
+      className={`bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border border-white/20 dark:border-gray-700/50 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 relative min-h-[200px] overflow-hidden${selectedContestant ? ' border-l-4 border-l-pink-400' : ''}`}
     >
       <Link href={`/show/${show.id}`} className="block h-full">
         <div className="flex h-full flex-col md:flex-row">
@@ -71,7 +71,7 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
           </div>
 
           {/* Contestant thumbnail */}
-          <div className="relative w-full h-56 md:w-48 md:h-auto group">
+          <div className="relative w-full h-56 md:w-56 md:h-auto group">
             {selectedContestant ? (
               <>
                 <div className={`absolute inset-0 bg-gradient-to-br ${getNameGradientClass(selectedContestant.displayName)}`}>
@@ -100,11 +100,9 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
               </>
             ) : (
               <div className="absolute inset-0 bg-mint-100/50 dark:bg-mint-600/20 backdrop-blur-sm flex items-center justify-center">
-                <div className="text-center text-mint-600 dark:text-mint-400">
-                  <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  <p className="font-medium text-lg">未選択</p>
+                <div className="text-center text-pink-400 dark:text-pink-300">
+                  <div className="text-5xl mb-2 opacity-60">♥</div>
+                  <p className="font-medium text-base">推しを選ぼう</p>
                 </div>
               </div>
             )}

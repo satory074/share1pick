@@ -52,11 +52,14 @@ export default function MyPicksPage() {
           <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">
             My 1Picks
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-4">
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
             {selectionCount > 0
               ? `${selectionCount}つの番組から選んだあなたの1pickコレクション`
               : 'まだ1pickが選択されていません'}
           </p>
+          {selectionCount > 0 && selectionCount === multiPicks.length && (
+            <p className="text-base font-bold text-pink-500">全番組コンプリート！🎉</p>
+          )}
         </motion.div>
 
         {multiPicks.length === 0 ? (
@@ -168,18 +171,18 @@ export default function MyPicksPage() {
                       </div>
 
                       <div className="flex items-center space-x-4">
-                        <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                        <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
                           <AvatarFallback
                             src={contestant.image}
                             alt={contestant.displayName}
-                            width={64}
-                            height={64}
+                            width={80}
+                            height={80}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <div className="flex-1">
                           <h4 className="text-lg font-semibold text-gray-800 dark:text-white">
-                            {contestant.displayName}
+                            <span className="text-pink-500 mr-1">♥</span>{contestant.displayName}
                           </h4>
                           {contestant.furigana && (
                             <p className="text-sm text-gray-500 dark:text-gray-400">

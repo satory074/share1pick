@@ -23,9 +23,10 @@ export default function StickyShareBar({ selectionCount }: StickyShareBarProps) 
         <div className="flex justify-center">
           <Link
             href="/my-picks"
-            className="inline-flex items-center bg-mint-600 text-white px-8 py-3 md:px-10 md:py-4 rounded-xl font-bold hover:bg-mint-500 transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 text-base md:text-lg"
+            className="inline-flex items-center text-white px-8 py-3 md:px-10 md:py-4 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-2xl transform hover:scale-105 text-base md:text-lg"
+            style={{ background: 'linear-gradient(to right, #5DD9B9, #EC4899)' }}
           >
-            🎉 シェアする
+            ♥ シェアする
             <span className="ml-3 bg-white text-mint-600 px-3 py-1.5 rounded-full text-sm font-bold">
               {selectionCount}件
             </span>

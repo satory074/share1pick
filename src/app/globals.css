@@ -17,6 +17,11 @@
   --coral-500: #FF9B93;
   --coral-400: #FFACA5;
 
+  /* Pink Colors */
+  --pink-500: #EC4899;
+  --pink-400: #F472B6;
+  --pink-200: #FBCFE8;
+
   /* Accent Colors */
   --gold-500: #FFD54F;
   --blue-400: #6EC5FF;
@@ -50,6 +55,11 @@
   --color-coral-600: var(--coral-600);
   --color-coral-500: var(--coral-500);
   --color-coral-400: var(--coral-400);
+
+  /* Custom Pink Colors */
+  --color-pink-500: var(--pink-500);
+  --color-pink-400: var(--pink-400);
+  --color-pink-200: var(--pink-200);
 
   /* Custom Accent Colors */
   --color-gold-500: var(--gold-500);

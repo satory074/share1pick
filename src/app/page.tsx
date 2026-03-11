@@ -23,7 +23,8 @@ export default function Home() {
       <div className="container mx-auto px-4 py-12 pb-28" id="main-content">
         <header className="text-center mb-12">
           <motion.h1
-            className="text-5xl font-bold text-gray-800 dark:text-white mb-4"
+            className="text-5xl font-bold mb-4 bg-clip-text text-transparent"
+            style={{ backgroundImage: 'linear-gradient(to right, #5DD9B9, #EC4899, #a855f7)' }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
@@ -36,8 +37,18 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            サバイバルオーディション番組の1pickを選んでシェアしよう
+            ♥ サバイバルオーディション番組の1pickを選んでシェアしよう
           </motion.p>
+          {selectionCount > 0 && (
+            <motion.p
+              className="mt-3 text-base font-semibold text-pink-500"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.4 }}
+            >
+              {selectionCount} / {shows.length} 番組選択済み ♥
+            </motion.p>
+          )}
         </header>
 
         <motion.section

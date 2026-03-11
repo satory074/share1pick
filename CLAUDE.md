@@ -54,7 +54,7 @@ src/
 |---|---|---|
 | `getNameInitials`, `getNameGradientClass` | `shared/utils/contestant.ts` | Avatar fallback — do NOT duplicate in components |
 | `getProxiedImageUrl` | `shared/utils/imageProxy.ts` | CORS proxy for html2canvas |
-| `encodeShareData`, `decodeShareData`, `generateTwitterShareText`, `copyToClipboard` | `shared/utils/share.ts` | Share URL + Twitter text |
+| `encodeShareData`, `decodeShareData`, `generateTwitterShareText`, `generateMultiPickShareText`, `copyToClipboard` | `shared/utils/share.ts` | Share URL + Twitter/copy text |
 
 `AvatarFallback` (`shared/components/AvatarFallback.tsx`) handles image error with initials fallback declaratively. Never manipulate `e.target.style.display` — use this component everywhere.
 
@@ -154,9 +154,12 @@ For html2canvas, all external URLs must go through `/api/image-proxy` (adds `Acc
 **Colors** (defined as CSS variables in `globals.css`, available as Tailwind utilities):
 - Primary: `bg-mint-600` (#5DD9B9) — buttons, links
 - Secondary: `bg-coral-600` (#FF8A80) — secondary actions
+- Pink: `bg-pink-500` (#EC4899), `bg-pink-400` (#F472B6), `bg-pink-200` (#FBCFE8) — selection state, hearts
 - Backgrounds: `from-mint-50 to-bg-warm` (light) / `from-dark-bg to-dark-surface` (dark)
 
-**Buttons**: Solid colors only — no gradients. `bg-mint-600 hover:bg-mint-500` for primary, `bg-coral-600 hover:bg-coral-500` for secondary.
+**Buttons**: `bg-mint-600 hover:bg-mint-500` for primary, `bg-coral-600 hover:bg-coral-500` for secondary. CTA buttons (e.g. StickyShareBar) use `linear-gradient(to right, #5DD9B9, #EC4899)` inline style — **not** Tailwind gradient classes (OKLCH constraint).
+
+**Selection state**: Pink (`border-pink-500 ring-pink-200 shadow-pink-200`), heart icon ♥ — not purple. Hover state: `hover:border-pink-300 group-hover:text-pink-500`.
 
 ## Testing
 
