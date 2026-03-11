@@ -13,7 +13,7 @@ npm run test:watch # Vitest in watch mode
 vercel --prod      # Deploy to production
 ```
 
-- Dev server may use port 3001 if 3000 is occupied
+- Dev server uses the next available port if 3000 is occupied (may be 3001, 3002, etc.)
 - Production builds do NOT use Turbopack
 
 ## Architecture Overview

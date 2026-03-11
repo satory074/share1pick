@@ -78,8 +78,6 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
                   <AvatarFallback
                     src={selectedContestant.image}
                     alt={selectedContestant.displayName}
-                    width={192}
-                    height={224}
                     fill
                     className="object-cover"
                   />
