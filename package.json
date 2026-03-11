@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "prebuild": "npx tsx scripts/validate-images.ts --warn",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "validate:images": "npx tsx scripts/validate-images.ts"
   },
   "dependencies": {
     "focus-trap-react": "^12.0.0",

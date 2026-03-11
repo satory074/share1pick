@@ -5,12 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Development Commands
 
 ```bash
-npm run dev        # Dev server (Turbopack — dev only)
-npm run build      # Production build + lint
-npm run lint       # ESLint only
-npm test           # Vitest unit tests (run once)
-npm run test:watch # Vitest in watch mode
-vercel --prod      # Deploy to production
+npm run dev              # Dev server (Turbopack — dev only)
+npm run build            # Production build (runs validate:images --warn first)
+npm run lint             # ESLint only
+npm test                 # Vitest unit tests (run once)
+npm run test:watch       # Vitest in watch mode
+npm run validate:images  # Check for contestants with empty image strings
+vercel --prod            # Deploy to production
 ```
 
 - Dev server uses the next available port if 3000 is occupied (may be 3001, 3002, etc.)
@@ -91,6 +92,33 @@ interface Contestant {
 **Adding a new show**: Insert into `shows` array in `src/data/shows.ts` (position = homepage display order). No other files need updating — Twitter sharing uses only contestant `displayName`, not show-specific hashtags. New hosts for `<Image>` require an entry in `next.config.ts` → `images.remotePatterns`.
 
 **Display order**: Rearrange objects in the `shows` array. The `year` field does not affect ordering.
+
+### Contestant Image Policy
+
+**Priority order for `image` field (空文字禁止):**
+
+| Priority | Format | Example |
+|---|---|---|
+| ① Best | Self-hosted WebP | `/images/contestants/{show-id}/{id}.webp` |
+| ② OK | YouTube thumbnail | `https://img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg` |
+| ③ Allowed | External profile | `https://kprofiles.com/...`, `https://produce101.jp/...` |
+| ④ **Forbidden** | Empty string | `""` ← **never use for new data** |
+
+**Self-hosted spec**: `public/images/contestants/{show-id}/{contestant-id}.webp`, 300×400px, ≤100KB.
+- Self-hosted images: no CORS proxy needed (html2canvas works directly)
+- YouTube thumbnails: `AvatarFallback` handles 404s gracefully
+- External URLs: fragile — migrate to self-hosted when possible
+
+**Validation:**
+```bash
+npm run validate:images   # lists all empty-image contestants (exit 1 on any)
+npm run build             # runs validate:images --warn before building
+```
+
+New show checklist:
+- [ ] All contestants have non-empty `image` values
+- [ ] New image hosts added to `next.config.ts` → `images.remotePatterns`
+- [ ] Run `npm run validate:images` before committing
 
 ## Critical Technical Constraints
 
