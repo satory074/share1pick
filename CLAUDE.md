@@ -42,10 +42,6 @@ src/
 └── types/index.ts
 ```
 
-**Legacy files** (not imported by any active code — can be deleted):
-- `src/components/ShareActions.tsx`, `ContestantCard.tsx`, `MultiPickShareImage.tsx`
-- `src/hooks/useSelections.ts`, `src/lib/shareUtils.ts`
-
 ### State Management (Zustand)
 
 `src/store/selectionsStore.ts` persists to `localStorage` key `allSelections` (backward-compatible with old format). The `_hasHydrated` flag prevents SSR mismatches — components read 0/empty until hydration completes.
@@ -92,7 +88,7 @@ interface Contestant {
 
 **Furigana format**: Korean names → Korean pronunciation in Katakana (`강다니엘 → "カン・ダニエル"`). Japanese names → standard reading. Chinese names → Chinese pronunciation.
 
-**Adding a new show**: Append to `shows` array in `src/data/shows.ts`. No other files need updating — Twitter sharing uses only contestant `displayName`, not show-specific hashtags.
+**Adding a new show**: Insert into `shows` array in `src/data/shows.ts` (position = homepage display order). No other files need updating — Twitter sharing uses only contestant `displayName`, not show-specific hashtags. New hosts for `<Image>` require an entry in `next.config.ts` → `images.remotePatterns`.
 
 **Display order**: Rearrange objects in the `shows` array. The `year` field does not affect ordering.
 
@@ -129,6 +125,8 @@ The 12 background presets and grid config live in `src/features/sharing/constant
 External images used with Next.js `<Image>` require entries in `next.config.ts` → `images.remotePatterns`. Current allowed hosts: `3rd.produce101.jp`, `kprofiles.com`, `kpopping.com`, `img.youtube.com`.
 
 For html2canvas, all external URLs must go through `/api/image-proxy` (adds `Access-Control-Allow-Origin: *`). Use `getProxiedImageUrl()` from `shared/utils/imageProxy.ts`.
+
+**YouTube thumbnail hotlinking**: `img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg` URLs work for most videos but YouTube may block hotlinks for some videos, causing `AvatarFallback` (gradient color block) to appear instead. This is a YouTube-side restriction — affected contestants show initials/gradient fallback which is acceptable UX.
 
 ## Implementation Patterns
 
