@@ -41,6 +41,10 @@ src/
 ├── store/selectionsStore.ts      # Zustand 5 + persist middleware
 ├── data/shows.ts                 # All show + contestant data (static)
 └── types/index.ts
+scripts/
+├── collect-youtube-ids.py        # Collect YouTube video IDs per show (uv + yt-dlp)
+├── update-shows-from-youtube.py  # Apply collected IDs to shows.ts
+└── youtube-ids-{show-id}.json   # Collected results per show
 ```
 
 ### State Management (Zustand)
@@ -101,13 +105,15 @@ interface Contestant {
 |---|---|---|
 | ① Best | Self-hosted WebP | `/images/contestants/{show-id}/{id}.webp` |
 | ② OK | YouTube thumbnail | `https://img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg` |
-| ③ Allowed | External profile | `https://kprofiles.com/...`, `https://produce101.jp/...` |
+| ③ Allowed | External profile | `https://kprofiles.com/...` |
 | ④ **Forbidden** | Empty string | `""` ← **never use for new data** |
 
 **Self-hosted spec**: `public/images/contestants/{show-id}/{contestant-id}.webp`, 300×400px, ≤100KB.
 - Self-hosted images: no CORS proxy needed (html2canvas works directly)
 - YouTube thumbnails: `AvatarFallback` handles 404s gracefully
-- External URLs: fragile — migrate to self-hosted when possible
+- External URLs: fragile — migrate to YouTube thumbnails or self-hosted when possible
+
+**Current image state** (517/522 contestants use YouTube thumbnails): 5 contestants have no official solo video and retain non-YouTube images: `jo-eun-woo`, `yeom-tae-gyun`, `tao-yuan` (Boys Planet early eliminations), `sutani-ririka` (P101 Japan The Girls), `seo-sanghyuk` (P101 S2).
 
 **Validation:**
 ```bash
@@ -119,6 +125,36 @@ New show checklist:
 - [ ] All contestants have non-empty `image` values
 - [ ] New image hosts added to `next.config.ts` → `images.remotePatterns`
 - [ ] Run `npm run validate:images` before committing
+
+### Contestant Image Collection Scripts
+
+When adding a new show or updating images, use the `scripts/` workflow:
+
+```bash
+# 1. Add the show config to SHOW_CONFIGS in collect-youtube-ids.py
+# 2. Collect YouTube video IDs (requires uv + yt-dlp):
+uv run --with yt-dlp scripts/collect-youtube-ids.py <show-id>
+# → writes scripts/youtube-ids-{show-id}.json
+
+# 3. Review the JSON for incorrect matches, fix manually if needed
+
+# 4. Apply to shows.ts:
+uv run scripts/update-shows-from-youtube.py <show-id>
+uv run scripts/update-shows-from-youtube.py <show-id> --dry-run  # preview only
+```
+
+**Show-specific series used per show** (for search queries):
+| Show | YouTube Series | Channel |
+|---|---|---|
+| PRODUCE 48 | `[48스페셜] 도전! 아.이.컨.택` | Mnet TV |
+| PRODUCE 101 S1 | `1:1 Eyecontact` | Mnet TV |
+| PRODUCE 101 S2 | `자기소개_1분 PR` | Mnet TV |
+| Boys Planet | `타임어택 1분 자기소개` | Mnet K-POP |
+| Girls Planet 999 | `99 PR_자기소개` | Mnet K-POP |
+| PRODUCE X 101 | `일대일아이컨택` | Mnet K-POP |
+| I-LAND | `글로벌 투표 PR 영상` | Mnet K-POP |
+| P101 JAPAN / THE GIRLS | `自己紹介_1分PR` / `1分PR` | PRODUCE 101 JAPAN 新世界 |
+| R U Next? | `Recipe of Me!` | HYBE LABELS + |
 
 ## Critical Technical Constraints
 
@@ -150,11 +186,11 @@ The 12 background presets and grid config live in `src/features/sharing/constant
 
 ### External Images (CORS + Next.js config)
 
-External images used with Next.js `<Image>` require entries in `next.config.ts` → `images.remotePatterns`. Current allowed hosts: `3rd.produce101.jp`, `kprofiles.com`, `kpopping.com`, `img.youtube.com`.
+External images used with Next.js `<Image>` require entries in `next.config.ts` → `images.remotePatterns`. Current allowed hosts: `img.youtube.com`, `kprofiles.com`, `kpopping.com`, `3rd.produce101.jp`.
 
 For html2canvas, all external URLs must go through `/api/image-proxy` (adds `Access-Control-Allow-Origin: *`). Use `getProxiedImageUrl()` from `shared/utils/imageProxy.ts`.
 
-**YouTube thumbnail hotlinking**: `img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg` URLs work for most videos but YouTube may block hotlinks for some videos, causing `AvatarFallback` (gradient color block) to appear instead. This is a YouTube-side restriction — affected contestants show initials/gradient fallback which is acceptable UX.
+**YouTube thumbnail hotlinking**: `img.youtube.com/vi/{VIDEO_ID}/hqdefault.jpg` works for most videos but YouTube may block hotlinks for some, causing `AvatarFallback` (gradient color block) to appear. This is a YouTube-side restriction — gradient fallback is acceptable UX.
 
 ## Implementation Patterns
 
