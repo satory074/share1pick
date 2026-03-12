@@ -199,7 +199,7 @@ For html2canvas, all external URLs must go through `/api/image-proxy` (adds `Acc
 - Dynamic content that differs between server and client (e.g., selection count) is guarded by `_hasHydrated` in the Zustand store.
 
 ### Accessibility
-- `ContestantCard` uses `role="radio"`, `aria-checked`, `tabIndex`, and `onKeyDown` for Enter/Space.
+- `ContestantCard` uses `role="radio"`, `aria-checked`, `tabIndex`, and `onKeyDown` for Enter/Space. Its callback prop is **`onSelect: (contestant: Contestant) => void`** (not `onClick`) — the card calls `onSelect(contestant)` internally, so `ContestantGrid` passes `onSelect={onSelect}` directly without a lambda wrapper.
 - `ContestantGrid` uses `role="radiogroup"`.
 - `Modal` (`shared/components/Modal.tsx`) uses `focus-trap-react` for keyboard trap, ESC handler, and backdrop click.
 - Sticky bars use `role="status"` + `aria-live="polite"`.
@@ -239,4 +239,8 @@ Tests live in `__tests__/` alongside source files. Config: `vitest.config.mts`. 
 
 Vercel (Tokyo region `hnd1`). Production URL: `https://share1pick.vercel.app`
 
+**Deploy requirement**: `git config user.email` must match the Vercel account email (`satory074@gmail.com`). A mismatch causes `Error: Git author ... must have access to the team` and the deploy fails.
+
 **Stack**: Next.js 15.5.9 · React 19.1.0 · TypeScript 5 (strict) · Tailwind CSS 4 · Zustand 5 · Zod · Framer Motion · html2canvas · focus-trap-react
+
+**React version note**: `react` and `react-dom` must stay at the same version. If Turbopack dev server crashes with "Incompatible React versions", run `npm install` to resync `node_modules`.
