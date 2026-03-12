@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import AvatarFallback from '@/shared/components/AvatarFallback';
@@ -8,36 +9,39 @@ import { getNameGradientClass } from '@/shared/utils/contestant';
 interface ContestantCardProps {
   contestant: Contestant;
   isSelected: boolean;
-  onClick: () => void;
+  onSelect: (contestant: Contestant) => void;
   index: number;
   disabled?: boolean;
 }
 
-export default function ContestantCard({
+function ContestantCard({
   contestant,
   isSelected,
-  onClick,
+  onSelect,
   index,
   disabled = false,
 }: ContestantCardProps) {
+  const handleClick = disabled ? undefined : () => onSelect(contestant);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onSelect(contestant);
+    }
+  };
+
   return (
     <motion.div
       role="radio"
       aria-checked={isSelected}
       aria-label={`${contestant.displayName}を選択`}
       tabIndex={disabled ? -1 : 0}
-      onKeyDown={(e) => {
-        if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
-          e.preventDefault();
-          onClick();
-        }
-      }}
+      onKeyDown={handleKeyDown}
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: Math.min(index * 0.05, 0.3) }}
       whileHover={disabled ? {} : { scale: 1.05, y: -5 }}
       whileTap={disabled ? {} : { scale: 0.95 }}
-      onClick={disabled ? undefined : onClick}
+      onClick={handleClick}
       className={`
         bg-white dark:bg-gray-800 rounded-xl p-4 transition-all duration-300 border-2 group
         ${disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer hover:shadow-xl'}
@@ -84,3 +88,5 @@ export default function ContestantCard({
     </motion.div>
   );
 }
+
+export default memo(ContestantCard);

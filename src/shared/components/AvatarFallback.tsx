@@ -9,6 +9,7 @@ type AvatarFallbackProps = {
   alt: string;
   className?: string;
   loading?: 'lazy' | 'eager';
+  sizes?: string;
 } & (
   | { fill: true; width?: never; height?: never }
   | { fill?: false; width: number; height: number }
@@ -23,6 +24,7 @@ export default function AvatarFallback({
   alt,
   className = 'w-full h-full object-cover',
   loading = 'lazy',
+  sizes,
   fill,
   ...rest
 }: AvatarFallbackProps) {
@@ -44,6 +46,7 @@ export default function AvatarFallback({
         src={src}
         alt={alt}
         fill
+        sizes={sizes}
         className={className}
         loading={loading}
         onError={() => setHasError(true)}

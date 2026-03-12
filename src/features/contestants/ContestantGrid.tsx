@@ -48,7 +48,7 @@ export default function ContestantGrid({
             key={contestant.id}
             contestant={contestant}
             isSelected={selectedContestantId === contestant.id}
-            onClick={() => onSelect(contestant)}
+            onSelect={onSelect}
             index={index}
             disabled={isSelecting}
           />

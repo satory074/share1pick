@@ -20,14 +20,19 @@ const GRADIENTS = [
   'from-teal-400 to-green-400',
 ] as const;
 
+const gradientCache = new Map<string, string>();
+
 /**
  * 名前ハッシュに基づいて一貫したグラデーションクラスを返す
  * Source of truth: 全コンポーネントでこの関数を使用すること
  */
 export function getNameGradientClass(displayName: string): string {
+  if (gradientCache.has(displayName)) return gradientCache.get(displayName)!;
   const hash = displayName.split('').reduce((a, b) => {
     a = ((a << 5) - a) + b.charCodeAt(0);
     return a & a;
   }, 0);
-  return GRADIENTS[Math.abs(hash) % GRADIENTS.length];
+  const result = GRADIENTS[Math.abs(hash) % GRADIENTS.length];
+  gradientCache.set(displayName, result);
+  return result;
 }

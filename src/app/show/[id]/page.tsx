@@ -4,7 +4,7 @@ import { shows } from '@/data/shows';
 import { Contestant } from '@/types';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useCallback, use } from 'react';
 import ContestantGrid from '@/features/contestants/ContestantGrid';
 import StickySelectionBar from '@/features/contestants/StickySelectionBar';
 import { useSelections } from '@/shared/hooks/useSelections';
@@ -32,6 +32,15 @@ export default function ShowPage({ params }: ShowPageProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedParams.id]);
 
+  const handleContestantSelect = useCallback((contestant: Contestant) => {
+    if (!show) return;
+    setIsSelecting(true);
+    setSelectedContestant(contestant);
+    addSelection(show.id, contestant.id);
+    setTimeout(() => setIsSelecting(false), 500);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show?.id, addSelection]);
+
   if (!show) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface flex items-center justify-center">
@@ -46,13 +55,6 @@ export default function ShowPage({ params }: ShowPageProps) {
       </div>
     );
   }
-
-  const handleContestantSelect = (contestant: Contestant) => {
-    setIsSelecting(true);
-    setSelectedContestant(contestant);
-    addSelection(show.id, contestant.id);
-    setTimeout(() => setIsSelecting(false), 1000);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-mint-50 to-bg-warm dark:from-dark-bg dark:to-dark-surface">

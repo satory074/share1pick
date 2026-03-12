@@ -1,9 +1,9 @@
 'use client';
 
+import { memo, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
 import { Show, Contestant } from '@/types';
 import AvatarFallback from '@/shared/components/AvatarFallback';
 import { getNameGradientClass } from '@/shared/utils/contestant';
@@ -14,7 +14,7 @@ interface ShowCardProps {
   selectedContestant?: Contestant | null;
 }
 
-export default function ShowCard({ show, index, selectedContestant }: ShowCardProps) {
+function ShowCard({ show, index, selectedContestant }: ShowCardProps) {
   const [logoError, setLogoError] = useState(false);
 
   return (
@@ -79,6 +79,7 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
                     src={selectedContestant.image}
                     alt={selectedContestant.displayName}
                     fill
+                    sizes="(max-width: 768px) 100vw, 224px"
                     className="object-cover"
                   />
                 </div>
@@ -112,3 +113,5 @@ export default function ShowCard({ show, index, selectedContestant }: ShowCardPr
     </motion.div>
   );
 }
+
+export default memo(ShowCard);
